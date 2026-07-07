@@ -1395,6 +1395,16 @@
   color: #f59e0b;
 }
 
+.doc-type-card-icon.risk-assessment {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.12), rgba(220, 38, 38, 0.06));
+  color: #dc2626;
+}
+
+.doc-type-card-icon.draft-document {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(79, 70, 229, 0.06));
+  color: #4f46e5;
+}
+
 /* 텍스트 콘텐츠 */
 .doc-type-card-content {
   width: 100%;

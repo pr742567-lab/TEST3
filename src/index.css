@@ -1401,5 +1401,181 @@ body {
   color: var(--accent-color);
 }
 
+/* ─── 문서 네비게이션용 카드 허브 스타일 ─── */
+.nav-card-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.2rem;
+  animation: fadeIn 0.35s ease;
+  width: 100%;
+}
+
+.nav-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.2rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: transparent;
+  transition: background var(--transition-fast);
+}
+
+.nav-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.nav-card:hover::before {
+  background: var(--accent-color);
+}
+
+.nav-card:active {
+  transform: translateY(0);
+}
+
+.nav-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.nav-card:hover .nav-card-icon {
+  transform: scale(1.08);
+}
+
+/* 카테고리별 아이콘 배경색 테마 */
+.nav-card-icon.troubleshooting {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.12), rgba(13, 148, 136, 0.06));
+  color: var(--accent-color);
+}
+
+.nav-card-icon.work-standard {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(79, 70, 229, 0.06));
+  color: #4f46e5;
+}
+
+.nav-card-icon.work-manual {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.06));
+  color: #10b981;
+}
+
+.nav-card-icon.risk-assessment {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.12), rgba(220, 38, 38, 0.06));
+  color: #dc2626;
+}
+
+.nav-card-icon.improvement-proposal {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.06));
+  color: #f59e0b;
+}
+
+.nav-card-content {
+  flex: 1;
+  text-align: left;
+}
+
+.nav-card-content h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.2rem 0;
+  word-break: keep-all;
+}
+
+.nav-card-content p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+  padding-right: 2rem;
+  word-break: keep-all;
+}
+
+.nav-card-arrow {
+  font-size: 1rem;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-card:hover .nav-card-arrow {
+  transform: translateX(4px);
+  color: var(--accent-color);
+}
+
+/* ─── 채팅 화면 상단 액티브 헤더 및 뒤로가기 ─── */
+.chat-category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chat-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--border-radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chat-back-btn:hover {
+  background: var(--bg-surface-heavy);
+  color: var(--text-primary);
+  border-color: #cbd5e1;
+}
+
+.active-category-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.active-category-title .category-icon {
+  font-size: 1.2rem;
+}
+
+.active-category-title h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+
 
 

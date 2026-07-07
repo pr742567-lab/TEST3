@@ -3,7 +3,7 @@
 export const STATIC_SUGGESTIONS = {
   "트러블슈팅": [
     {"title": "램프 조치", "text": "CM2 WIS 하부램프 각도 틀어짐 조치 방법"},
-    {"title": "센서 작동", "text": "PM3 Reel Scanner Ash Sensor 작동 불량 조치"},
+    {"title": "산소 급감", "text": "폐수 처리장 용존산소량(DO) 급감 시 폭기조 송풍기 점검"},
     {"title": "진동 이상", "text": "PM1 Duo Shaker 진동 이상 현상 조치 방법"},
     {"title": "누수 조치", "text": "PM3 Headbox Feed Pump 누수 발생 시 조치 방법"},
     {"title": "회전자 파손", "text": "MX3 NBKP Refiner 회전자 파손 조치 방법"},
@@ -14,7 +14,7 @@ export const STATIC_SUGGESTIONS = {
     {"title": "롤러 긁힘", "text": "CM1 캘린더 롤 표면 긁힘 발생 시 비상 연마 조치"},
     {"title": "지합 불량", "text": "PM2 프레스 파트 지합 불량 시 탈수 밸브 제어"},
     {"title": "정전기 흡착", "text": "재단기 원지 급지부 정전기 흡착 현상 트러블슈팅"},
-    {"title": "산소 급감", "text": "폐수 처리장 용존산소량(DO) 급감 시 폭기조 송풍기 점검"},
+    {"title": "센서 작동", "text": "PM3 Reel Scanner Ash Sensor 작동 불량 조치"},
     {"title": "압력 저하", "text": "보일러 증기 압력 저하 알람 발생 시 버너 점검"},
     {"title": "펌프 압력", "text": "PM3 릴 스풀 매거진 유압 펌프 압력 저하 대책"},
     {"title": "개방 불량", "text": "CM3 블레이드 빔 개방 불량 시 실린더 에어 라인 조치"},
@@ -24,10 +24,10 @@ export const STATIC_SUGGESTIONS = {
     {"title": "단면 불량", "text": "재단 3호기 슬리터 칼날 마모로 인한 단면 불량 해결"}
   ],
   "작업표준": [
-    {"title": "작업 표준", "text": "CM2 언와인더 BP대차 이송 시 작업 표준을 알려주세요."},
+    {"title": "칼날 교체", "text": "CM2 Cut Knife 교체하는 방법은?"},
     {"title": "청소 작업", "text": "Head Box 립 청소 작업 표준"},
     {"title": "필터 교체", "text": "PM1 C.C Roll Unit Filter 교체 작업 표준"},
-    {"title": "칼날 교체", "text": "CM2 Cut Knife 교체 작업 절차"},
+    {"title": "작업 표준", "text": "CM2 언와인더 BP대차 이송 시 작업 표준을 알려주세요."},
     {"title": "센서 청소", "text": "CM3 Scanner Sensor 청소 및 교체 작업 표준"},
     {"title": "씰 교체", "text": "Machine Chest 펌프 누수 조치 및 씰 교체 방법"},
     {"title": "밸브 교체", "text": "ON-OFF 밸브 Open/Close 신호 위치 교체 작업 표준"},
@@ -46,7 +46,7 @@ export const STATIC_SUGGESTIONS = {
     {"title": "모터 교체", "text": "폐수 약품 용해조 교반기 모터 교체 작업 표준"}
   ],
   "위험성평가": [
-    {"title": "고압 세척", "text": "초지기 와이어 고압 세척 작업 시 위험성평가"},
+    {"title": "가동 전 위험", "text": "CM2 가동 전 발생할 수 있는 위험 요인은?"},
     {"title": "나이프 교체", "text": "재단기 나이프 블록 교체 시 안전 조치 및 위험성평가"},
     {"title": "밀폐 청소", "text": "밀폐공간(Machine Chest) 내부 청소 작업 안전 대책"},
     {"title": "크레인 이송", "text": "크레인을 이용한 중량물 롤(Roll) 이송 작업 위험 요인"},
@@ -65,10 +65,10 @@ export const STATIC_SUGGESTIONS = {
     {"title": "조명 교체", "text": "원지 저장창고 천장 조명 교체 고소 작업 위험 요인"},
     {"title": "탈수기 교체", "text": "폐수 슬러지 탈수기 스크류 교체 정비 작업 위험 표준"},
     {"title": "닥터 교체", "text": "초지 드라이 파트 입구 닥터 나이프 교체 위험성평가"},
-    {"title": "가드 연동", "text": "설비 기동 전 가드 안전 스위치 연동 정비 시 위험 요인"}
+    {"title": "고압 세척", "text": "초지기 와이어 고압 세척 작업 시 위험성평가"}
   ],
   "개선제안": [
-    {"title": "응축수 회수", "text": "초지기 건조부 스팀 응축수 회수율 제고 개선 방안"},
+    {"title": "센서 개선", "text": "PM3 Reel Scanner Ash Sensor 작동 불량 개선"},
     {"title": "인버터 제어", "text": "리와인더 슬리터 드라이브 모터 인버터 제어 도입 제안"},
     {"title": "온도 제어", "text": "Head Box 립 온도 제어를 통한 평량 프로파일 개선"},
     {"title": "가변속 제어", "text": "재단기 폐지원지 컨베이어 모터 가변속 제어 도입"},
@@ -78,7 +78,7 @@ export const STATIC_SUGGESTIONS = {
     {"title": "방진 커버", "text": "스캐너 센서 방진 커버 이중 격벽 도입 제안"},
     {"title": "낙하 방지", "text": "원지 포장기 입구 롤 센서 위치 조정을 통한 낙하 파손 방지"},
     {"title": "안전 가드", "text": "모터 구동 커플링 안전 가드 경량 알루미늄 재질 변경"},
-    {"title": "산소 공급", "text": "폐수 처리장 포기조 마이크로 버블 산소 공급 장치 도입"},
+    {"title": "응축수 회수", "text": "초지기 건조부 스팀 응축수 회수율 제고 개선 방안"},
     {"title": "스프레이 개선", "text": "PM1 프레스 펠트 수명 연장을 위한 고압 스프레이 개선"},
     {"title": "무선 감시", "text": "CM1 코터 롤러 구동 베어링 온도 무선 감시 센서 설치"},
     {"title": "윤활유 여과", "text": "초지기 윤활유 정밀 여과 루프 필터 추가 개선안"},

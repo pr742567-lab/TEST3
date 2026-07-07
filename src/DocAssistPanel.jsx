@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Lightbulb } from 'lucide-react';
+import { FileText, Lightbulb, AlertTriangle, FileCheck } from 'lucide-react';
 import DeptReportTab from './DeptReportTab';
 import ImprovementProposalTab from './ImprovementProposalTab';
 import './DocAssistPanel.css';
@@ -15,6 +15,9 @@ import './DocAssistPanel.css';
 const DocAssistPanel = ({ messages = [] }) => {
   // 선택된 문서 유형 (null: 선택 화면, 'weekly_report': 주요업무보고, 'improvement_proposal': 개선 제안서)
   const [selectedDocType, setSelectedDocType] = useState(null);
+  // 모달 상태 관리 (준비 중 안내 목적)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   // 문서 유형 선택 화면으로 돌아가기
   const handleBack = () => setSelectedDocType(null);
@@ -54,6 +57,7 @@ const DocAssistPanel = ({ messages = [] }) => {
       <div className="doc-type-selector">
         <div
           className="doc-type-card"
+          id="doc-card-weekly-report"
           onClick={() => setSelectedDocType('weekly_report')}
         >
           <div className="doc-type-card-icon weekly-report">
@@ -69,6 +73,7 @@ const DocAssistPanel = ({ messages = [] }) => {
 
         <div
           className="doc-type-card"
+          id="doc-card-improvement-proposal"
           onClick={() => setSelectedDocType('improvement_proposal')}
         >
           <div className="doc-type-card-icon improvement-proposal">
@@ -79,6 +84,40 @@ const DocAssistPanel = ({ messages = [] }) => {
             <p>문제점과 개선안을 입력하면 AI가 다듬어 제안서 양식에 맞는 Excel을 자동 생성합니다</p>
           </div>
           <div className="doc-type-card-badge">Excel</div>
+          <div className="doc-type-card-arrow">→</div>
+        </div>
+
+        {/* 신규 추가: 위험성 평가 */}
+        <div
+          className="doc-type-card"
+          id="doc-card-risk-assessment"
+          onClick={() => { setModalMessage('현재 준비중입니다'); setIsModalOpen(true); }}
+        >
+          <div className="doc-type-card-icon risk-assessment">
+            <AlertTriangle size={32} />
+          </div>
+          <div className="doc-type-card-content">
+            <h3>위험성 평가</h3>
+            <p>작업 프로세스와 위험 요인을 입력하면 AI가 분석하여 위험성평가표를 작성합니다</p>
+          </div>
+          <div className="doc-type-card-badge">Excel</div>
+          <div className="doc-type-card-arrow">→</div>
+        </div>
+
+        {/* 신규 추가: 품의서 */}
+        <div
+          className="doc-type-card"
+          id="doc-card-draft-document"
+          onClick={() => { setModalMessage('현재 준비중입니다'); setIsModalOpen(true); }}
+        >
+          <div className="doc-type-card-icon draft-document">
+            <FileCheck size={32} />
+          </div>
+          <div className="doc-type-card-content">
+            <h3>품의서</h3>
+            <p>작성 목적 및 결재 요약 사항을 입력하면 표준 양식의 기안문을 자동 작성합니다</p>
+          </div>
+          <div className="doc-type-card-badge">Word</div>
           <div className="doc-type-card-arrow">→</div>
         </div>
       </div>
@@ -107,6 +146,24 @@ const DocAssistPanel = ({ messages = [] }) => {
           </div>
         </div>
       </div>
+
+      {/* 글로벌 알림 모달 창 (준비 중 안내 목적) */}
+      {isModalOpen && (
+        <div className="custom-modal-overlay" id="doc-modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="custom-modal-content" id="doc-modal-content" onClick={e => e.stopPropagation()}>
+            <div className="custom-modal-header">
+              <h3>💡 안내</h3>
+              <button className="custom-modal-close" id="doc-modal-close" onClick={() => setIsModalOpen(false)}>&times;</button>
+            </div>
+            <div className="custom-modal-body">
+              <p>{modalMessage}</p>
+            </div>
+            <div className="custom-modal-footer">
+              <button className="custom-modal-confirm-btn" id="doc-modal-confirm" onClick={() => setIsModalOpen(false)}>확인</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
