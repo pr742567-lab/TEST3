@@ -1,0 +1,902 @@
+/* ========================================
+   OJT 가이드 패널 스타일
+   기존 디자인 시스템(CSS 변수) 재활용
+   ======================================== */
+
+/* --- 패널 컨테이너 --- */
+.ojt-panel {
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%; /* 부모 뷰포트에 맞게 100% 핏 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 바깥 스크롤 방지 */
+  animation: ojtFadeIn 0.4s ease;
+}
+
+@keyframes ojtFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 스텝 인디케이터 --- */
+.ojt-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 0.8rem; /* 여백 대폭 축소 */
+  padding: 0 2rem;
+}
+
+.ojt-step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.ojt-step-dot.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.15);
+}
+
+.ojt-step-dot.completed {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+
+.ojt-step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border-color);
+  max-width: 120px;
+  transition: background 0.3s ease;
+}
+
+.ojt-step-line.completed {
+  background: var(--accent-color);
+}
+
+.ojt-step-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  text-align: center;
+  position: absolute;
+  bottom: -22px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.ojt-step-dot.active .ojt-step-label,
+.ojt-step-dot.completed .ojt-step-label {
+  color: var(--accent-color);
+}
+
+/* --- Step 0: 부서 선택 화면 --- */
+.ojt-select-screen {
+  animation: ojtSlideIn 0.35s ease;
+}
+
+@keyframes ojtSlideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.ojt-welcome-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 0.75rem 1rem; /* 여백 축소 */
+  text-align: center;
+  margin-bottom: 0.6rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.ojt-welcome-icon {
+  font-size: 1.4rem; /* 크기 축소 */
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.ojt-welcome-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.ojt-welcome-card p {
+  color: var(--text-secondary);
+  font-size: 0.76rem; /* 글자 축소 */
+  line-height: 1.4; /* 라인 높이 축소 */
+}
+
+.ojt-select-form {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 0.75rem; /* 패딩 축소 */
+  box-shadow: var(--shadow-sm);
+}
+
+.ojt-select-row {
+  display: flex;
+  flex-direction: column; /* 모바일 가로폭을 고려하여 항상 세로 정렬 */
+  gap: 0.4rem; /* gap 축소 */
+  margin-bottom: 0.6rem; /* 마진 축소 */
+}
+
+.ojt-select-group {
+  flex: 1;
+  min-width: 120px;
+}
+
+.ojt-select-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.ojt-select {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-surface-heavy);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  padding-right: 2rem;
+}
+
+.ojt-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+.ojt-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ojt-start-btn {
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.ojt-start-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+}
+
+.ojt-start-btn:disabled {
+  background: var(--bg-surface-heavy);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- Step 1: 학습 화면 --- */
+.ojt-learning-screen {
+  animation: ojtSlideIn 0.35s ease;
+}
+
+/* 부서/파트 표시 배지 */
+.ojt-dept-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(15, 118, 110, 0.08);
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  color: var(--accent-color);
+  padding: 0.25rem 0.6rem; /* 패딩 축소 */
+  border-radius: 50px;
+  font-size: 0.8rem; /* 폰트 축소 */
+  margin-bottom: 0.8rem; /* 마진 축소 */
+}
+
+/* 메트릭 카드 */
+.ojt-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3열 그리드로 가로 정렬하여 수직 공간 최소화 */
+  gap: 0.5rem; /* gap 축소 */
+  margin-bottom: 0.8rem; /* 마진 축소 */
+}
+
+.ojt-metric-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 0.5rem; /* 패딩 대폭 축소 */
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast);
+  border-top: 3px solid var(--accent-color);
+}
+
+.ojt-metric-card:hover {
+  border-color: var(--border-highlight);
+}
+
+.ojt-metric-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.ojt-metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.ojt-metric-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  font-weight: 500;
+}
+
+/* 요약 콘텐츠 카드 */
+.ojt-summary-section {
+  margin-bottom: 0.8rem;
+  flex-grow: 1;
+}
+
+.ojt-summary-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ojt-summary-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-color);
+  border-radius: var(--border-radius-md);
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 0.8rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.ojt-summary-card:hover {
+  border-left-color: #0d9488;
+  box-shadow: var(--shadow-md);
+  transform: translateX(2px);
+}
+
+.ojt-summary-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.ojt-summary-card-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.ojt-summary-card h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ojt-summary-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* 영상 링크 버튼 */
+.ojt-video-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-highlight);
+  border-radius: var(--border-radius-md);
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  color: inherit;
+}
+
+.ojt-video-link:hover {
+  border-color: var(--accent-color);
+  border-style: solid;
+  background: rgba(15, 118, 110, 0.04);
+}
+
+.ojt-video-link-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 118, 110, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.ojt-video-link-text h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.ojt-video-link-text p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* 숙지 확인 + 버튼 영역 */
+.ojt-confirm-area {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.ojt-confirm-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ojt-confirm-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent-color);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ojt-confirm-checkbox span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.ojt-next-btn {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.ojt-next-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.ojt-next-btn:disabled {
+  background: var(--bg-surface-heavy);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Step 2: 퀴즈 화면 --- */
+.ojt-quiz-screen {
+  animation: ojtSlideIn 0.35s ease;
+}
+
+.ojt-quiz-intro {
+  background: rgba(15, 118, 110, 0.06);
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  border-radius: var(--border-radius-md);
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.ojt-quiz-intro-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.ojt-quiz-intro p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.ojt-quiz-intro strong {
+  color: var(--accent-color);
+}
+
+.ojt-quiz-question {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.ojt-quiz-question-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.ojt-quiz-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ojt-quiz-question-header h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.ojt-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ojt-quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.ojt-quiz-option:hover {
+  background: var(--bg-surface-heavy);
+  border-color: var(--border-highlight);
+}
+
+.ojt-quiz-option.selected {
+  background: rgba(15, 118, 110, 0.06);
+  border-color: var(--accent-color);
+}
+
+.ojt-quiz-option.correct {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: #10b981;
+}
+
+.ojt-quiz-option.incorrect {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: #ef4444;
+}
+
+.ojt-quiz-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-color);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ojt-quiz-option span {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+/* 퀴즈 피드백 (정답/오답 해설) */
+.ojt-quiz-feedback {
+  margin-top: 0.8rem;
+  padding: 0.8rem 1rem;
+  border-radius: var(--border-radius-md);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  animation: ojtFadeIn 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.ojt-quiz-feedback.correct {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #065f46;
+}
+
+.ojt-quiz-feedback.incorrect {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #991b1b;
+}
+
+.ojt-quiz-feedback-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ojt-submit-btn {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.ojt-submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.ojt-submit-btn:disabled {
+  background: var(--bg-surface-heavy);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  cursor: not-allowed;
+}
+
+/* 결과 카드 */
+.ojt-result-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+  box-shadow: var(--shadow-sm);
+  animation: ojtFadeIn 0.5s ease;
+}
+
+.ojt-result-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.ojt-result-card.pass {
+  border-top: 4px solid #10b981;
+}
+
+.ojt-result-card.pass h3 {
+  color: #10b981;
+}
+
+.ojt-result-card.fail {
+  border-top: 4px solid #f59e0b;
+}
+
+.ojt-result-card.fail h3 {
+  color: #f59e0b;
+}
+
+.ojt-result-score {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0.5rem 0;
+}
+
+.ojt-result-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.ojt-reset-btn {
+  padding: 0.8rem 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ojt-reset-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+/* --- 네비게이션 (뒤로가기 버튼) --- */
+.ojt-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.4rem 0;
+  margin-bottom: 1rem;
+  transition: color var(--transition-fast);
+}
+
+.ojt-back-btn:hover {
+  color: var(--accent-color);
+}
+
+/* --- 확대 예정 모달 --- */
+.ojt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: ojtFadeIn 0.2s ease;
+}
+
+.ojt-modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: ojtModalIn 0.3s ease;
+}
+
+@keyframes ojtModalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.ojt-modal-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.ojt-modal h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.ojt-modal p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.ojt-modal-close-btn {
+  padding: 0.7rem 2rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.ojt-modal-close-btn:hover {
+  opacity: 0.9;
+}
+
+/* --- 학습 항목 리스트 카드 (Step 1) --- */
+.ojt-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem; /* gap 축소 */
+  margin-top: 0.5rem;
+  flex-grow: 1;
+  overflow-y: auto; /* 학습 목록 영역 독립 스크롤 적용 */
+  min-height: 0;
+  padding-right: 4px;
+}
+
+.ojt-item-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.ojt-item-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-md);
+  transform: translateX(4px);
+}
+
+.ojt-item-card-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 118, 110, 0.08);
+  border-radius: var(--border-radius-md);
+}
+
+.ojt-item-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ojt-item-card-body h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.ojt-item-card-body p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.4rem;
+}
+
+.ojt-item-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.ojt-item-card-arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.ojt-item-card:hover .ojt-item-card-arrow {
+  color: var(--accent-color);
+}
+
+/* 결과 카드 액션 버튼 그룹 */
+.ojt-result-actions {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* --- 반응형 및 기본 여백 조정 --- */
+.ojt-welcome-card {
+  padding: 0.75rem 1rem;
+}
+
+/* 독립 스크롤 래퍼 및 Step 2/3 레이아웃 */
+.ojt-learning-screen,
+.ojt-quiz-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ojt-scroll-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.ojt-confirm-area {
+  margin-top: auto; /* 하단 고정 */
+}
+
+.ojt-submit-btn {
+  margin-top: auto !important; /* 하단 고정 */
+}

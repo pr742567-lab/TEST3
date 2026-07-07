@@ -1,0 +1,736 @@
+/* ═══════════════════════════════════════════════════════════════
+   부서별 보고서 폼 스타일 (DeptReportForm.css)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── 전체 폼 컨테이너 ─── */
+.dept-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+/* ─── 1단계 기본 정보 입력 카드 (Premium Glassmorphism) ─── */
+.dept-form-info-container {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 0.5rem 0.6rem; /* 패딩 극대화 축소 */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem; /* gap 극대화 축소 */
+  transition: all 0.3s ease;
+}
+
+.dept-form-info-header {
+  display: none; /* 모바일 및 고정 뷰포트에서 스크롤 방지를 위해 헤더 타이틀 숨김 처리 */
+}
+
+/* 2단 그리드 레이아웃 */
+.dept-form-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* 항상 1열 세로 정렬 */
+  gap: 0.4rem; /* gap 추가 축소 */
+}
+
+.dept-form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem; /* gap 추가 축소 */
+}
+
+/* 아이콘 포함 라벨 스타일 */
+.dept-form-field-label-with-icon,
+.dept-form-period-label-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.76rem; /* 글자 크기 축소 */
+  font-weight: 700;
+  color: var(--text-secondary, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.1rem; /* 마진 최소화 */
+}
+
+.dept-form-period-label-with-icon {
+  color: var(--primary-color, #7c5cfc);
+}
+
+.field-icon {
+  color: var(--primary-color, #7c5cfc);
+  opacity: 0.85;
+}
+
+.info-footer {
+  margin-top: 0.1rem;
+  padding-top: 0.3rem; /* 패딩 축소 */
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem; /* 간격 좁힘 */
+}
+
+/* ─── 섹션 블록 ─── */
+.dept-form-sections-container {
+  display: flex;
+  flex-direction: column; /* 항상 세로 정렬 */
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.dept-form-sections-container .dept-form-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.dept-form-section {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dept-form-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #f0f0f0);
+}
+
+.dept-form-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a0a0a0);
+  margin: -0.25rem 0 0.5rem 0;
+}
+
+/* ─── 입력 필드 공통 ─── */
+.dept-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem; /* gap 축소 */
+}
+
+.dept-form-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #a0a0a0);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dept-form-input,
+.dept-form-select {
+  padding: 0.3rem 0.5rem; /* 높이 극대화 축소 */
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.05));
+  color: var(--text-primary, #f0f0f0);
+  font-size: 0.8rem; /* 글자 크기 축소 */
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.dept-form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 0.8rem;
+  padding-right: 1.5rem !important; /* 우측 커스텀 화살표 공간 확보 */
+}
+
+.dept-form-input:focus,
+.dept-form-select:focus {
+  border-color: var(--primary-color, #7c5cfc);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.15);
+}
+
+.dept-form-input-sm {
+  max-width: 160px;
+}
+
+/* ─── 행 레이아웃 ─── */
+.dept-form-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.dept-form-field-sm {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── 기간 입력 그룹 ─── */
+.dept-form-period-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem; /* gap 축소 */
+  margin-top: 0.5rem;
+}
+
+.dept-form-period {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.dept-form-period-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #a0a0a0);
+}
+
+.dept-form-date-row {
+  display: flex;
+  flex-direction: row; /* 가로 일렬 배치로 수직 공간 대폭 절약 */
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dept-form-date-row .dept-form-input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.35rem 0.4rem; /* 패딩 대폭 축소 */
+  font-size: 0.8rem; /* 폰트 축소 */
+}
+
+.dept-form-tilde {
+  color: var(--text-secondary, #64748b);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0; /* 마진 제거 */
+  line-height: 1;
+  flex-shrink: 0; /* 물결 축소 방지 */
+}
+
+/* ─── 요약 바 (2단계 상단) ─── */
+.dept-form-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+}
+
+.dept-form-dept-badge {
+  background: linear-gradient(135deg, var(--primary-color, #7c5cfc), #a78bfa);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+}
+
+.dept-form-period-badge {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a0a0a0);
+  font-weight: 500;
+}
+
+.dept-form-back-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-secondary, #a0a0a0);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dept-form-back-btn:hover {
+  color: var(--text-primary, #f0f0f0);
+  border-color: var(--primary-color, #7c5cfc);
+}
+
+/* ─── 업무 항목 카드 ─── */
+.dept-entry-card {
+  background: var(--input-bg, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.2s;
+}
+
+.dept-entry-card:hover {
+  border-color: rgba(124, 92, 252, 0.3);
+}
+
+.dept-entry-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dept-entry-cat-select {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.05));
+  color: var(--text-primary, #f0f0f0);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.dept-entry-cat-select:focus {
+  border-color: var(--primary-color, #7c5cfc);
+}
+
+.dept-entry-remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #a0a0a0);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.dept-entry-remove-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.dept-entry-content {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 10px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.05));
+  color: var(--text-primary, #f0f0f0);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: none; /* 크기 조정 핸들 제거 */
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  scrollbar-width: none; /* 스크롤바 완벽 방지 */
+}
+
+.dept-entry-content:focus {
+  border-color: var(--primary-color, #7c5cfc);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12);
+}
+
+.dept-entry-content::placeholder {
+  color: var(--text-secondary, #a0a0a0);
+  opacity: 0.6;
+}
+
+.dept-entry-meta-row {
+  display: flex;
+  flex-wrap: wrap; /* 좁은 폭 대응 줄바꿈 */
+  gap: 0.8rem 0.6rem;
+  align-items: flex-end;
+}
+
+.dept-entry-meta-field {
+  display: flex;
+  flex-direction: column; /* 세로 정렬로 겹침 현상 방지 */
+  align-items: flex-start;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 100px;
+}
+
+.dept-entry-meta-field.key-task-field {
+  flex-direction: row; /* 체크박스는 가로 정렬 유지 */
+  align-items: center;
+  flex: 1 1 100%; /* 별도 행 확보 */
+  margin-top: 0.25rem;
+  gap: 0.4rem;
+}
+
+.dept-entry-meta-field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary, #a0a0a0);
+  white-space: nowrap;
+}
+
+/* ─── 항목 추가 버튼 ─── */
+.dept-add-entry-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem;
+  border: 1.5px dashed var(--border-color, rgba(255, 255, 255, 0.15));
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary, #a0a0a0);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dept-add-entry-btn:hover {
+  border-color: var(--primary-color, #7c5cfc);
+  color: var(--primary-color, #7c5cfc);
+  background: rgba(124, 92, 252, 0.06);
+}
+
+/* ─── 하단 액션 영역 ─── */
+.dept-form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.dept-refine-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dept-refine-level-select {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 10px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.05));
+  color: var(--text-primary, #f0f0f0);
+  font-size: 0.82rem;
+  outline: none;
+  min-width: 160px;
+}
+
+.dept-refine-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #7c5cfc, #a78bfa);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.dept-refine-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.dept-refine-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 로딩 스피너 */
+.dept-spinner {
+  animation: dept-spin 1s linear infinite;
+}
+
+@keyframes dept-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─── 푸터 ─── */
+.dept-form-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dept-form-next-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.8rem; /* 가로 폭 및 세로 절약을 위한 패딩 축소 */
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.82rem; /* 폰트 크기 조정 */
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap; /* 글자 줄바꿈 및 깨짐 방지 */
+  flex-shrink: 0; /* 구겨짐 방지 */
+}
+
+.dept-form-next-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.dept-form-next-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dept-form-hint {
+  font-size: 0.72rem; /* 글자 크기 축소 */
+  color: var(--text-secondary, #a0a0a0);
+  line-height: 1.3;
+}
+
+/* ─── 에러 메시지 ─── */
+.dept-error {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 0.82rem;
+}
+
+/* ─── 미리보기 컴포넌트 스타일 ─── */
+
+.dept-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.dept-preview-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+}
+
+/* 실적 및 계획 표 가로 배치 컨테이너 */
+.dept-preview-tables-container {
+  display: flex;
+  flex-direction: column; /* 항상 세로 정렬 */
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.dept-preview-tables-container .dept-preview-table-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.dept-preview-table-wrap {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 1.25rem;
+  overflow-x: auto;
+}
+
+.dept-preview-table-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary, #f0f0f0);
+  margin-bottom: 0.75rem;
+}
+
+.dept-preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dept-preview-table th {
+  background: rgba(124, 92, 252, 0.15);
+  color: var(--text-primary, #f0f0f0);
+  font-weight: 700;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+.dept-preview-table td {
+  padding: 0.55rem 0.8rem;
+  color: var(--text-primary, #e0e0e0);
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+  white-space: pre-wrap;
+  line-height: 1.45;
+  vertical-align: top;
+}
+
+.dept-preview-table tr:hover td {
+  background: rgba(124, 92, 252, 0.05);
+}
+
+.dept-preview-table .col-cat {
+  width: 25%; /* 너비 확장 */
+  font-weight: 600;
+  color: var(--text-secondary, #a0a0a0);
+  white-space: nowrap; /* 텍스트 찌그러짐 방지 */
+}
+
+.dept-preview-table .col-content {
+  width: 45%;
+}
+
+.dept-preview-table .col-date {
+  width: 15%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.dept-preview-table .col-note {
+  width: 15%;
+  white-space: nowrap;
+}
+
+/* 다운로드 섹션 */
+.dept-download-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+}
+
+.dept-download-info h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #f0f0f0);
+  margin: 0 0 0.25rem 0;
+}
+
+.dept-download-info p {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #a0a0a0);
+  margin: 0;
+}
+
+.dept-download-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.dept-download-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.dept-download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dept-preview-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-secondary, #a0a0a0);
+  font-size: 0.82rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dept-preview-back-btn:hover {
+  color: var(--text-primary, #f0f0f0);
+  border-color: var(--primary-color, #7c5cfc);
+}
+
+/* ─── 핵심 업무 지정 체크박스 ─── */
+.dept-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #a0a0a0);
+  cursor: pointer;
+  user-select: none;
+}
+
+.dept-checkbox-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
+  background: var(--input-bg, rgba(255, 255, 255, 0.05));
+  cursor: pointer;
+  accent-color: var(--primary-color, #7c5cfc);
+}
+
+.dept-checkbox-label:hover {
+  color: var(--text-primary, #f0f0f0);
+}
+
+/* ─── AI 다듬기 단계 핵심 업무 배지 및 카드 강조 ─── */
+.key-task-card {
+  border-color: rgba(245, 158, 11, 0.4) !important; /* 골드/주황 톤으로 핵심 강조 */
+  background: rgba(245, 158, 11, 0.02) !important;
+}
+
+.key-task-card:hover {
+  border-color: rgba(245, 158, 11, 0.6) !important;
+}
+
+.review-key-task-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  padding: 0.12rem 0.45rem;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  margin-left: 0.5rem;
+}
+
+/* ─── 미리보기 핵심/주간 섹션 그룹 타이틀 ─── */
+.dept-preview-section-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.dept-preview-group-title {
+  margin: 0.5rem 0 0 0;
+  letter-spacing: -0.01em;
+}
+
