@@ -130,6 +130,102 @@ const DEMO_CONTENT = {
   ],
 };
 
+const MAINTENANCE_CONTENT = {
+  metrics: { guides: 2, time: '20분', passScore: 80 },
+  items: [
+    {
+      title: '예방정비(PM) 주기 관리 기준',
+      description: '진주공장의 주요 기계 설비 예방 정비 활동 및 주기적 검사 프로세스를 이해합니다.',
+      icon: '🔧',
+      duration: '10분',
+      videoTitle: 'PM 정비 및 점검 가이드 (최공무 사원)',
+      videoLink: '#',
+      summary: [
+        {
+          icon: '🔧',
+          title: '예방정비(PM) 개요',
+          content: '예방정비는 설비 고장을 사전에 예방하기 위해 주기적으로 정비, 점검, 윤활, 청소 등을 수행하는 활동입니다. 일일, 주간, 월간, 반기, 연간 단위로 주기적 체크리스트에 의거해 수행합니다.'
+        },
+        {
+          icon: '📅',
+          title: '주요 설비 점검 주기',
+          content: '핵심 설비인 초지기 프레스 롤 베어링의 경우 매월 진동 분석 점검을 수행하며, 감속기 기어 오일은 반기(6개월)마다 수치 분석 및 필요 시 교체 조치를 실행합니다.'
+        }
+      ],
+      quiz: [
+        {
+          question: '감속기 기어 오일의 수치 분석 및 분석 점검 권장 주기는 어떻게 됩니까?',
+          options: ['매주', '매월', '6개월(반기) 마다', '2년 마다'],
+          correctIndex: 2,
+          explanation: '감속기 기어 오일은 반기(6개월)마다 수치 분석 및 점검을 수행하는 것이 기본 주기입니다.'
+        }
+      ]
+    },
+    {
+      title: '설비 윤활 관리 표준 수칙',
+      description: '회전 기계 장비의 조기 마모 방지를 위한 그리스 및 오일 주입 표준 절차입니다.',
+      icon: '🛢️',
+      duration: '10분',
+      videoTitle: '설비 윤활 기초 교육',
+      videoLink: '#',
+      summary: [
+        {
+          icon: '🛢️',
+          title: '윤활 관리의 5대 원칙',
+          content: '적정유(Right Oil), 적량(Right Quantity), 적시(Right Time), 적소(Right Place), 적색(Right Cleanliness)을 준수하여 오염되지 않도록 관리해야 합니다.'
+        },
+        {
+          icon: '⚠️',
+          title: '그리스 주입 시 주의 사항',
+          content: '윤활 부위에 그리스 주입 전 노즐 니플 주변의 이물질을 완전히 닦아내어야 하며, 과다 주입 시 베어링 내부 압력 증가로 고온 발열 및 씰 손상이 유발될 수 있어 정량을 준수해야 합니다.'
+        }
+      ],
+      quiz: [
+        {
+          question: '그리스 과다 주입 시 발생할 수 있는 이상 현상이 아닌 것은?',
+          options: ['베어링 내부 압력 증가', '베어링 고온 발열 발생', '오일 씰 파손 및 그리스 누출', '모터 회전 속도 급증'],
+          correctIndex: 3,
+          explanation: '그리스를 과다하게 주입하면 베어링 압력이 증가하고 마찰로 인해 고온이 발생하며 씰이 손상될 수 있지만, 모터 회전 속도가 급증하지는 않습니다.'
+        }
+      ]
+    }
+  ]
+};
+
+const COMMON_CONTENT = {
+  metrics: { guides: 1, time: '10분', passScore: 80 },
+  items: [
+    {
+      title: '무림 공통 직무 소양 교육',
+      description: '신입사원으로서 알아야 할 기본 사내 규정 및 정보보안 가이드입니다.',
+      icon: '🏢',
+      duration: '10분',
+      videoTitle: '무림인 공통 기본 소양 교육 (인재개발팀)',
+      videoLink: '#',
+      summary: [
+        {
+          icon: '🏢',
+          title: '회사 사명 및 핵심 가치',
+          content: '무림은 친환경 종이 및 신소재 문화를 선도하는 기업으로서 고객 지향, 도전 정신, 동반 성장의 핵심 가치를 공유합니다.'
+        },
+        {
+          icon: '🔒',
+          title: '사내 정보 보안 준수',
+          content: '사내 PC는 업무 종료 시 반드시 화면 잠금을 실시해야 하며, 외부 USB 등의 저장 매체 사용은 사내 보안 프로그램(DLP)을 통해 사전 승인을 득한 후 사용할 수 있습니다.'
+        }
+      ],
+      quiz: [
+        {
+          question: '업무 중 자리를 비우거나 퇴근 시 사내 보안을 위해 준수해야 할 조치는?',
+          options: ['PC 켜두기', 'PC 화면 잠금(Win+L) 또는 전원 끄기', '비밀번호 포스트잇 부착', '모니터만 끄기'],
+          correctIndex: 1,
+          explanation: '사내 보안 유지를 위해 자리를 비우거나 퇴근할 때 PC 화면을 잠그거나 전원을 끄는 것이 기본 보안 수칙입니다.'
+        }
+      ]
+    }
+  ]
+};
+
 // ──────────────────────────────────────
 // 메인 컴포넌트
 // ──────────────────────────────────────
@@ -152,11 +248,21 @@ const OjtGuidePanel = () => {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  // 시범 부서 여부
-  const isDemo = selectedDept === '품질보증부' && selectedPart === '생산관리파트';
+  // 현재 선택된 부서/파트에 따라 콘텐츠 데이터 분기
+  const getContentData = () => {
+    if (selectedDept === '품질보증부' && selectedPart === '생산관리파트') {
+      return DEMO_CONTENT;
+    }
+    if (selectedDept === '공무부' && selectedPart === '설비관리파트') {
+      return MAINTENANCE_CONTENT;
+    }
+    return COMMON_CONTENT;
+  };
+
+  const activeContent = getContentData();
 
   // 현재 선택된 학습 항목
-  const currentItem = selectedItemIdx !== null ? DEMO_CONTENT.items[selectedItemIdx] : null;
+  const currentItem = selectedItemIdx !== null ? activeContent.items[selectedItemIdx] : null;
 
   // 점수 계산
   const getScore = () => {
@@ -271,7 +377,7 @@ const OjtGuidePanel = () => {
             <button
               className="ojt-start-btn"
               disabled={!selectedDept || (!selectedPart && ORG_DATA[selectedDept]?.length > 0)}
-              onClick={() => isDemo ? setStep(1) : setShowModal(true)}
+              onClick={() => setStep(1)}
             >
               학습 시작하기 <ChevronRight size={18} />
             </button>
@@ -292,17 +398,17 @@ const OjtGuidePanel = () => {
           <div className="ojt-metrics">
             <div className="ojt-metric-card">
               <span className="ojt-metric-icon">📖</span>
-              <div className="ojt-metric-value">{DEMO_CONTENT.metrics.guides}개</div>
+              <div className="ojt-metric-value">{activeContent.metrics.guides}개</div>
               <div className="ojt-metric-label">필수 학습 항목</div>
             </div>
             <div className="ojt-metric-card">
               <span className="ojt-metric-icon">⏱️</span>
-              <div className="ojt-metric-value">{DEMO_CONTENT.metrics.time}</div>
+              <div className="ojt-metric-value">{activeContent.metrics.time}</div>
               <div className="ojt-metric-label">총 학습 권장 시간</div>
             </div>
             <div className="ojt-metric-card">
               <span className="ojt-metric-icon">🏆</span>
-              <div className="ojt-metric-value">{DEMO_CONTENT.metrics.passScore}점</div>
+              <div className="ojt-metric-value">{activeContent.metrics.passScore}점</div>
               <div className="ojt-metric-label">각 항목 패스 기준</div>
             </div>
           </div>
@@ -313,7 +419,7 @@ const OjtGuidePanel = () => {
           </div>
 
           <div className="ojt-item-list">
-            {DEMO_CONTENT.items.map((item, idx) => (
+            {activeContent.items.map((item, idx) => (
               <div
                 className="ojt-item-card"
                 key={idx}
@@ -423,7 +529,7 @@ const OjtGuidePanel = () => {
               <p>
                 <strong>{currentItem.title}</strong> 학습 내용을 검증합니다.
                 <br />
-                <strong>{DEMO_CONTENT.metrics.passScore}점 이상</strong>이면 통과입니다.
+                <strong>{activeContent.metrics.passScore}점 이상</strong>이면 통과입니다.
               </p>
             </div>
 
@@ -472,17 +578,17 @@ const OjtGuidePanel = () => {
 
             {/* 결과 카드 */}
             {submitted && (
-              <div className={`ojt-result-card ${getScore() >= DEMO_CONTENT.metrics.passScore ? 'pass' : 'fail'}`}>
+              <div className={`ojt-result-card ${getScore() >= activeContent.metrics.passScore ? 'pass' : 'fail'}`}>
                 <h3>
-                  {getScore() >= DEMO_CONTENT.metrics.passScore
+                  {getScore() >= activeContent.metrics.passScore
                     ? '🎉 축하합니다! 테스트를 통과했습니다'
                     : '📝 아쉽지만 기준 점수에 미달했습니다'}
                 </h3>
                 <div className="ojt-result-score">{getScore()}점</div>
                 <p>
-                  {getScore() >= DEMO_CONTENT.metrics.passScore
+                  {getScore() >= activeContent.metrics.passScore
                     ? '해당 항목의 핵심 내용을 잘 숙지하셨습니다. 수고하셨습니다!'
-                    : `패스 기준은 ${DEMO_CONTENT.metrics.passScore}점입니다. 요약 내용을 다시 확인해 보세요.`}
+                    : `패스 기준은 ${activeContent.metrics.passScore}점입니다. 요약 내용을 다시 확인해 보세요.`}
                 </p>
                 <div className="ojt-result-actions">
                   <button className="ojt-reset-btn" onClick={handleBackToList}>

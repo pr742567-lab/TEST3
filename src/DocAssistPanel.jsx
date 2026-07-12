@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FileText, Lightbulb, AlertTriangle, FileCheck } from 'lucide-react';
 import DeptReportTab from './DeptReportTab';
 import ImprovementProposalTab from './ImprovementProposalTab';
+import RiskAssessmentTab from './RiskAssessmentTab';
+import DraftDocumentTab from './DraftDocumentTab';
 import './DocAssistPanel.css';
 
 
@@ -29,6 +31,14 @@ const DocAssistPanel = ({ messages = [] }) => {
 
   if (selectedDocType === 'improvement_proposal') {
     return <ImprovementProposalTab onBack={handleBack} />;
+  }
+
+  if (selectedDocType === 'risk_assessment') {
+    return <RiskAssessmentTab onBack={handleBack} />;
+  }
+
+  if (selectedDocType === 'draft_document') {
+    return <DraftDocumentTab onBack={handleBack} />;
   }
 
   // 기본: 문서 유형 선택 화면
@@ -91,7 +101,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <div
           className="doc-type-card"
           id="doc-card-risk-assessment"
-          onClick={() => { setModalMessage('현재 준비중입니다'); setIsModalOpen(true); }}
+          onClick={() => setSelectedDocType('risk_assessment')}
         >
           <div className="doc-type-card-icon risk-assessment">
             <AlertTriangle size={32} />
@@ -108,7 +118,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <div
           className="doc-type-card"
           id="doc-card-draft-document"
-          onClick={() => { setModalMessage('현재 준비중입니다'); setIsModalOpen(true); }}
+          onClick={() => setSelectedDocType('draft_document')}
         >
           <div className="doc-type-card-icon draft-document">
             <FileCheck size={32} />

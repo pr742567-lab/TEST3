@@ -167,6 +167,12 @@ function App() {
       const targetQuestion = "PM3 Reel Scanner Ash Sensor 작동 불량 개선";
       suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion);
       suggestionsList.unshift({ text: targetQuestion });
+    } else if (selectedCategory === '업무매뉴얼') {
+      const targetQuestion1 = "신규 설비 도입 시 기안서 작성 및 품의 절차는 어떻게 되나요?";
+      const targetQuestion2 = "진주공장 안전 보건 정기 교육 실시 및 보고 기준";
+      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2);
+      suggestionsList.unshift({ text: targetQuestion2 });
+      suggestionsList.unshift({ text: targetQuestion1 });
     }
     
     // 무작위 셔플 후 상위 3개만 매핑 (고정 질문은 무조건 처음에 유지)
@@ -191,6 +197,12 @@ function App() {
       const rest = suggestionsList.filter(sug => sug.text !== targetQuestion);
       const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
       setSuggestions([{ text: targetQuestion }, ...shuffledRest.slice(0, 2)]);
+    } else if (selectedCategory === '업무매뉴얼') {
+      const targetQuestion1 = "신규 설비 도입 시 기안서 작성 및 품의 절차는 어떻게 되나요?";
+      const targetQuestion2 = "진주공장 안전 보건 정기 교육 실시 및 보고 기준";
+      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2);
+      const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
+      setSuggestions([{ text: targetQuestion1 }, { text: targetQuestion2 }, ...shuffledRest.slice(0, 1)]);
     } else {
       const shuffled = [...suggestionsList].sort(() => 0.5 - Math.random());
       setSuggestions(shuffled.slice(0, 3));
@@ -290,6 +302,22 @@ function App() {
       normalizedQuery.includes("작동불량조치") ||
       normalizedQuery.includes("scanner") ||
       normalizedQuery.includes("스캐너작동");
+
+    // 9. 업무매뉴얼: 신규 설비 도입 시 기안서 작성 및 품의 절차
+    const isDraftProcessScenario =
+      normalizedQuery.includes("기안서작성") ||
+      normalizedQuery.includes("품의절차") ||
+      normalizedQuery.includes("설비도입") ||
+      normalizedQuery.includes("기안서") ||
+      normalizedQuery.includes("품의");
+
+    // 10. 업무매뉴얼: 진주공장 안전 보건 정기 교육 실시 및 보고 기준
+    const isSafetyEduScenario =
+      normalizedQuery.includes("안전보건") ||
+      normalizedQuery.includes("정기교육") ||
+      normalizedQuery.includes("교육실시") ||
+      normalizedQuery.includes("보고기준") ||
+      (normalizedQuery.includes("안전") && normalizedQuery.includes("교육"));
 
     let fullAnswer = "";
     let sources = [];
@@ -566,6 +594,90 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
       sources = [
         { num: 1, title: 'PM3 스캐너 평량 측정 전용 PC 관련 문제 해결.docx', file_name: 'PM3 스캐너 평량 측정 전용 PC 관련 문제 해결.docx', score: 0.724, url: '#', web_view_link: '#' }
       ];
+    } else if (isDraftProcessScenario && selectedCategory === '업무매뉴얼') {
+      matched = true;
+      fullAnswer = `신규 설비 도입 시 기안서 작성 및 품의 절차에 대한 가이드는 아래와 같습니다.
+
+---
+
+### 1. 설비 도입 품의 절차 흐름도
+신규 기계 설비나 계측기 등을 도입할 때는 다음과 같은 표준 결재 단계를 거쳐야 합니다.
+1. **기술 검토 및 사양 확정**: 해당 공정 파트와 설비관리파트(공무부)가 공동으로 사양 및 예상 투자액을 검토합니다.
+2. **도입 기안서(품의서) 작성**: 도입 목적, 사양서, 기대 효과(투자비 회수 기간 등), 견적 비교표를 첨부하여 기안을 상신합니다.
+3. **부서 협의**: 공무부(인프라 검토) 및 관리부(예산 검토)의 합의를 거칩니다.
+4. **최종 결재**: 전결 규정에 의거하여 부장, 공장장 혹은 대표이사의 승인을 득합니다.
+
+---
+
+### 2. 기안서 작성 시 필수 첨부 서류
+* **설비 사양서 (Specification Sheet)**: 모터 용량, 전력 공급 조건, 크기, 중량 등이 기재되어 있어야 합니다.
+* **복수 견적서 및 비교표**: 최소 2개사 이상의 견적을 받아 단가 및 인도 조건을 비교해야 합니다.
+* **경제성 검토 보고서**: 투자 후 생산성 향상이나 원가 절감액을 수치화하여 ROI를 계산하여 명시해야 합니다.
+
+---
+
+### 3. 주요 주의 사항 (Key Points)
+* **LOTO 등 안전 장치 검토**: 기안서 작성 전 안전보건파트와 협의하여 설비 가동 및 비상 정지 안전 가드 등 안전 장치 도입 비용을 반드시 예산에 포함해야 합니다.`;
+      sources = [
+        { num: 1, title: '공무-02-005_신규 설비 도입 및 고정자산 관리 규정.pdf', score: 0.92, url: '#' },
+        { num: 2, title: '관리-01-012_투자 예산 집행 및 결재 전결 기준.xlsx', score: 0.81, url: '#' }
+      ];
+    } else if (isSafetyEduScenario && selectedCategory === '업무매뉴얼') {
+      matched = true;
+      fullAnswer = `진주공장 안전 보건 정기 교육 실시 및 보고 기준은 산업안전보건법 및 회사 사규에 따라 다음과 같이 관리됩니다.
+
+---
+
+### 1. 정기 안전 보건 교육 주기 및 시간
+* **생산/현장 근로자 (현업직)**: 매월 2시간 이상 (분기당 6시간 이상) 실시해야 합니다.
+* **사무직 근로자**: 매월 1시간 이상 (분기당 3시간 이상) 실시해야 합니다.
+* **관리감독자 (파트장 등)**: 연간 16시간 이상 이수해야 합니다.
+
+---
+
+### 2. 교육 실시 및 기록 보관 절차
+1. **교육 계획 수립**: 매년 1월 안전보건파트에서 연간 교육 계획을 수립하고 공지합니다.
+2. **교육 실시**: 각 파트별로 현장 안전 조회(TBM) 또는 집체 교육 형태로 실시합니다.
+3. **참석자 서명 및 일지 작성**: 교육 후 참석자의 친필 서명이 포함된 **'안전보건 교육일지'**를 반드시 작성해야 합니다.
+4. **결과 보고 및 보관**: 교육 완료 후 5일 이내에 안전 관리 시스템에 등록하고, 원본 일지는 **3년간 보관**해야 합니다.
+
+---
+
+### 3. 교육 제외 및 추가 교육
+* **신규 채용자**: 작업 배치 전 **8시간 이상** 신규 채용자 안전 교육을 별도 이수해야 합니다.
+* **특별안전보건교육**: 밀폐공간 작업, 밀링/재단기 칼날 정비 등 고위험 작업 종사자는 작업 배치 전 **16시간 이상**의 특별 교육이 의무화되어 있습니다.`;
+      sources = [
+        { num: 1, title: '안전-04-001_산업안전보건 교육 실시 지침.pdf', score: 0.95, url: '#' },
+        { num: 2, title: '안전-04-002_현장 TBM 및 특별안전교육 가이드.docx', score: 0.88, url: '#' }
+      ];
+    }
+
+    if (!matched) {
+      matched = true;
+      fullAnswer = `질문하신 **"${query}"**에 관한 사내 문서를 탐색한 결과입니다.
+
+---
+
+### 1. 주요 관련 규정 및 가이드라인
+* 사내 통합 지식 데이터베이스에서 검색어 **"${query}"**를 분석하여 추출한 정보입니다.
+* 본 정보는 시스템 데모를 위해 제공되는 모의 검색 결과(Mock RAG Response)입니다.
+
+---
+
+### 2. 가상 검색 분석 요약
+1. **요구사항 확인**: 입력하신 질문에 부합하는 사내 가이드 문서 및 기술 자료를 분석하고 있습니다.
+2. **권장 프로세스**:
+   - 관련 절차에 대해서는 소속 파트장 혹은 부서 내 선임 사원과 1차 협의 후 표준 지침에 따라 진행하십시오.
+   - 상세 양식 및 추가 자료는 사내 인트라넷 자료실 혹은 본 시스템의 **[문서 어시스트]** 탭에서 생성할 수 있습니다.
+   
+---
+
+### 3. 참고 예상 문서 (가상 출처)
+* 본 답변은 가상으로 생성된 것이며, 시스템 정식 연동 후 실제 데이터와 동기화됩니다.`;
+      sources = [
+        { num: 1, title: `사내_지식DB_검색결과_${selectedCategory || '공통'}.pdf`, score: 0.85, url: '#' },
+        { num: 2, title: `공통_업무가이드라인_개정판.docx`, score: 0.71, url: '#' }
+      ];
     }
 
     if (matched) {
@@ -812,8 +924,8 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                       <div className="nav-card-arrow">→</div>
                     </div>
 
-                    {/* 신규 추가: 업무매뉴얼 카드 (누르면 준비중 팝업 표시) */}
-                    <div className="nav-card" onClick={() => { setModalMessage('현재 준비중입니다'); setIsModalOpen(true); }} style={{ padding: '0.7rem 1rem' }}>
+                    {/* 신규 추가: 업무매뉴얼 카드 (실제 대화방 연결) */}
+                    <div className="nav-card" onClick={() => setSelectedCategory('업무매뉴얼')} style={{ padding: '0.7rem 1rem' }}>
                       <div className="nav-card-icon work-manual" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>📖</div>
                       <div className="nav-card-content">
                         <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>업무매뉴얼</h3>
@@ -837,6 +949,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                         {selectedCategory === '작업표준' && '📋'}
                         {selectedCategory === '위험성평가' && '⚠️'}
                         {selectedCategory === '개선제안' && '💡'}
+                        {selectedCategory === '업무매뉴얼' && '📖'}
                       </span>
                       <h3>{selectedCategory}</h3>
                     </div>
@@ -851,6 +964,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                           {selectedCategory === '작업표준' && '📋'}
                           {selectedCategory === '위험성평가' && '⚠️'}
                           {selectedCategory === '개선제안' && '💡'}
+                          {selectedCategory === '업무매뉴얼' && '📖'}
                         </span>
                         <h3 style={{ fontSize: '1.2rem', marginTop: '0.5rem' }}>{selectedCategory} AI 지식 검색</h3>
                         <p style={{ fontSize: '0.85rem' }}>
