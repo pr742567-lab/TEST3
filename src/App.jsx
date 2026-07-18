@@ -168,9 +168,11 @@ function App() {
       suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion);
       suggestionsList.unshift({ text: targetQuestion });
     } else if (selectedCategory === '업무매뉴얼') {
-      const targetQuestion1 = "신규 설비 도입 시 기안서 작성 및 품의 절차는 어떻게 되나요?";
-      const targetQuestion2 = "진주공장 안전 보건 정기 교육 실시 및 보고 기준";
-      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2);
+      const targetQuestion1 = "자재관리파트의 고정자산 처분 절차는 어떻게 되나요?";
+      const targetQuestion2 = "생산부의 원단위 분석 및 실적 산출 방법은 무엇인가요?";
+      const targetQuestion3 = "품질보증파트의 인증 관리 업무 절차는 어떻게 되나요?";
+      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3);
+      suggestionsList.unshift({ text: targetQuestion3 });
       suggestionsList.unshift({ text: targetQuestion2 });
       suggestionsList.unshift({ text: targetQuestion1 });
     }
@@ -198,11 +200,12 @@ function App() {
       const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
       setSuggestions([{ text: targetQuestion }, ...shuffledRest.slice(0, 2)]);
     } else if (selectedCategory === '업무매뉴얼') {
-      const targetQuestion1 = "신규 설비 도입 시 기안서 작성 및 품의 절차는 어떻게 되나요?";
-      const targetQuestion2 = "진주공장 안전 보건 정기 교육 실시 및 보고 기준";
-      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2);
+      const targetQuestion1 = "자재관리파트의 고정자산 처분 절차는 어떻게 되나요?";
+      const targetQuestion2 = "생산부의 원단위 분석 및 실적 산출 방법은 무엇인가요?";
+      const targetQuestion3 = "품질보증파트의 인증 관리 업무 절차는 어떻게 되나요?";
+      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3);
       const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
-      setSuggestions([{ text: targetQuestion1 }, { text: targetQuestion2 }, ...shuffledRest.slice(0, 1)]);
+      setSuggestions([{ text: targetQuestion1 }, { text: targetQuestion2 }, { text: targetQuestion3 }, ...shuffledRest.slice(0, 0)]);
     } else {
       const shuffled = [...suggestionsList].sort(() => 0.5 - Math.random());
       setSuggestions(shuffled.slice(0, 3));
@@ -303,21 +306,23 @@ function App() {
       normalizedQuery.includes("scanner") ||
       normalizedQuery.includes("스캐너작동");
 
-    // 9. 업무매뉴얼: 신규 설비 도입 시 기안서 작성 및 품의 절차
-    const isDraftProcessScenario =
-      normalizedQuery.includes("기안서작성") ||
-      normalizedQuery.includes("품의절차") ||
-      normalizedQuery.includes("설비도입") ||
-      normalizedQuery.includes("기안서") ||
-      normalizedQuery.includes("품의");
+    // 9. 업무매뉴얼: 자재관리파트의 고정자산 처분 절차
+    const isAssetDispositionScenario =
+      normalizedQuery.includes("고정자산") ||
+      normalizedQuery.includes("처분") ||
+      normalizedQuery.includes("자재관리");
 
-    // 10. 업무매뉴얼: 진주공장 안전 보건 정기 교육 실시 및 보고 기준
-    const isSafetyEduScenario =
-      normalizedQuery.includes("안전보건") ||
-      normalizedQuery.includes("정기교육") ||
-      normalizedQuery.includes("교육실시") ||
-      normalizedQuery.includes("보고기준") ||
-      (normalizedQuery.includes("안전") && normalizedQuery.includes("교육"));
+    // 10. 업무매뉴얼: 생산부의 원단위 분석 및 실적 산출 방법
+    const isUnitConsumptionScenario =
+      normalizedQuery.includes("원단위") ||
+      normalizedQuery.includes("실적산출") ||
+      normalizedQuery.includes("생산부");
+
+    // 11. 업무매뉴얼: 품질보증파트의 인증 관리 업무 절차
+    const isCertificationScenario =
+      normalizedQuery.includes("인증") ||
+      normalizedQuery.includes("인증관리") ||
+      normalizedQuery.includes("품질보증");
 
     let fullAnswer = "";
     let sources = [];
@@ -594,61 +599,97 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
       sources = [
         { num: 1, title: 'PM3 스캐너 평량 측정 전용 PC 관련 문제 해결.docx', file_name: 'PM3 스캐너 평량 측정 전용 PC 관련 문제 해결.docx', score: 0.724, url: '#', web_view_link: '#' }
       ];
-    } else if (isDraftProcessScenario && selectedCategory === '업무매뉴얼') {
+    } else if (isAssetDispositionScenario && selectedCategory === '업무매뉴얼') {
       matched = true;
-      fullAnswer = `신규 설비 도입 시 기안서 작성 및 품의 절차에 대한 가이드는 아래와 같습니다.
+      fullAnswer = `자재관리파트의 고정자산 처분 절차는 다음과 같이 진행됩니다.
 
 ---
 
-### 1. 설비 도입 품의 절차 흐름도
-신규 기계 설비나 계측기 등을 도입할 때는 다음과 같은 표준 결재 단계를 거쳐야 합니다.
-1. **기술 검토 및 사양 확정**: 해당 공정 파트와 설비관리파트(공무부)가 공동으로 사양 및 예상 투자액을 검토합니다.
-2. **도입 기안서(품의서) 작성**: 도입 목적, 사양서, 기대 효과(투자비 회수 기간 등), 견적 비교표를 첨부하여 기안을 상신합니다.
-3. **부서 협의**: 공무부(인프라 검토) 및 관리부(예산 검토)의 합의를 거칩니다.
-4. **최종 결재**: 전결 규정에 의거하여 부장, 공장장 혹은 대표이사의 승인을 득합니다.
+### 1. 업무 목적 및 개요
+* **업무 목적**: 고정자산 처분을 통한 원활한 자산 관리
+* **담당자**: 최정혁 (자재관리파트)
+* **보안등급**: 전사
+* **사업장**: 진주공장
 
 ---
 
-### 2. 기안서 작성 시 필수 첨부 서류
-* **설비 사양서 (Specification Sheet)**: 모터 용량, 전력 공급 조건, 크기, 중량 등이 기재되어 있어야 합니다.
-* **복수 견적서 및 비교표**: 최소 2개사 이상의 견적을 받아 단가 및 인도 조건을 비교해야 합니다.
-* **경제성 검토 보고서**: 투자 후 생산성 향상이나 원가 절감액을 수치화하여 ROI를 계산하여 명시해야 합니다.
-
----
-
-### 3. 주요 주의 사항 (Key Points)
-* **LOTO 등 안전 장치 검토**: 기안서 작성 전 안전보건파트와 협의하여 설비 가동 및 비상 정지 안전 가드 등 안전 장치 도입 비용을 반드시 예산에 포함해야 합니다.`;
+### 2. 단계별 업무 절차
+1. **고정자산폐기처리 요청**
+   - 사용 또는 관리부서(공무부 등)로부터 고정자산폐기처리 요청서와 업무협조전 수령
+   - 수령한 업무협조전을 참조하여 처분 검토 업무협조전 작성 후 구매2팀으로 송부 (사용 또는 관리부서에서 수령한 업무협조전 유첨)
+2. **구매검토서 확인**
+   - 구매2팀 구매검토의견 수령
+3. **품의서 작성**
+   - 구매검토의견을 참고하여 품의서 작성
+   - ※ 품의서는 부문장 결재 후 회계팀 송부(경영지원부문장 합의)
+4. **매각검토결과서 확인**
+   - 회계팀에서 품의서 확인 후 고정자산 매각검토결과서 작성
+   - 경영지원부문장 합의 및 사장님 전결 진행 후 자재관리파트로 송부
+   - 최종 처분 내역 확인
+5. **처분**
+   - 매각처와 일정 협의 후 처분(매각) 진행`;
       sources = [
-        { num: 1, title: '공무-02-005_신규 설비 도입 및 고정자산 관리 규정.pdf', score: 0.92, url: '#' },
-        { num: 2, title: '관리-01-012_투자 예산 집행 및 결재 전결 기준.xlsx', score: 0.81, url: '#' }
+        { num: 1, title: '업무매뉴얼 유형_고정자산 처분.pptx', file_name: '업무매뉴얼 유형_고정자산 처분.pptx', score: 0.95, url: '#', web_view_link: '#' }
       ];
-    } else if (isSafetyEduScenario && selectedCategory === '업무매뉴얼') {
+    } else if (isUnitConsumptionScenario && selectedCategory === '업무매뉴얼') {
       matched = true;
-      fullAnswer = `진주공장 안전 보건 정기 교육 실시 및 보고 기준은 산업안전보건법 및 회사 사규에 따라 다음과 같이 관리됩니다.
+      fullAnswer = `생산부의 원단위 분석 및 실적 산출 업무 처리 방법은 다음과 같습니다.
 
 ---
 
-### 1. 정기 안전 보건 교육 주기 및 시간
-* **생산/현장 근로자 (현업직)**: 매월 2시간 이상 (분기당 6시간 이상) 실시해야 합니다.
-* **사무직 근로자**: 매월 1시간 이상 (분기당 3시간 이상) 실시해야 합니다.
-* **관리감독자 (파트장 등)**: 연간 16시간 이상 이수해야 합니다.
+### 1. 업무 목적 및 개요
+* **목적**: 원단위 계획 대비 실적 차이 분석
+* **담당자**: 전형표 (생산부)
+* **보안등급**: 전사
+* **사업장**: 진주공장
 
 ---
 
-### 2. 교육 실시 및 기록 보관 절차
-1. **교육 계획 수립**: 매년 1월 안전보건파트에서 연간 교육 계획을 수립하고 공지합니다.
-2. **교육 실시**: 각 파트별로 현장 안전 조회(TBM) 또는 집체 교육 형태로 실시합니다.
-3. **참석자 서명 및 일지 작성**: 교육 후 참석자의 친필 서명이 포함된 **'안전보건 교육일지'**를 반드시 작성해야 합니다.
-4. **결과 보고 및 보관**: 교육 완료 후 5일 이내에 안전 관리 시스템에 등록하고, 원본 일지는 **3년간 보관**해야 합니다.
-
----
-
-### 3. 교육 제외 및 추가 교육
-* **신규 채용자**: 작업 배치 전 **8시간 이상** 신규 채용자 안전 교육을 별도 이수해야 합니다.
-* **특별안전보건교육**: 밀폐공간 작업, 밀링/재단기 칼날 정비 등 고위험 작업 종사자는 작업 배치 전 **16시간 이상**의 특별 교육이 의무화되어 있습니다.`;
+### 2. 세부 업무 처리 방법
+1. **원단위 실적 분석**
+   - 월말 기준으로 주원료, 부원료, 스팀, 가스에 대한 원단위 분석 실시
+2. **원단위 실적 산출**
+   - 주원료, 부원료, 스팀, 가스 원단위 실적을 MES에서 조회함 (생산속보, 원단위 리포트에서 조회 가능함)
+3. **변환 계획 산출**
+   - 기초 제공과 기말 제공을 반영한 Net 입고량으로 변환 계획 산출
+   - SAP에서 소요량 산출하여 원단위 변환
+4. **실적 분석**
+   - 사업계획, 변환계획, 실적을 각각의 차이에 대해 분석
+     - (1) **지종 구성 차이**: 변환계획 - 사업계획
+     - (2) **원단위 차이**: 실적 - 변환계획
+   - 월단위 표준 대비 차이 수량을 분석하여 원단위 차이를 분석`;
       sources = [
-        { num: 1, title: '안전-04-001_산업안전보건 교육 실시 지침.pdf', score: 0.95, url: '#' },
-        { num: 2, title: '안전-04-002_현장 TBM 및 특별안전교육 가이드.docx', score: 0.88, url: '#' }
+        { num: 1, title: '생산부_원단위 분석 업무매뉴얼.pptx', file_name: '생산부_원단위 분석 업무매뉴얼.pptx', score: 0.93, url: '#', web_view_link: '#' }
+      ];
+    } else if (isCertificationScenario && selectedCategory === '업무매뉴얼') {
+      matched = true;
+      fullAnswer = `품질보증파트의 인증 관리 업무 절차는 다음과 같이 진행됩니다.
+
+---
+
+### 1. 업무 목적 및 개요
+* **목적**: 국내외 품질/환경/안전 등 규격 인증 취득 및 유지 관리
+* **담당자**: 김민지 (품질보증파트)
+* **보안등급**: 전사
+* **사업장**: 진주공장
+
+---
+
+### 2. 세부 업무 절차
+1. **인증 심사 계획 수립**
+   - 연간 인증 취득 및 사후 관리 심사 일정 파악
+   - 심사 대비 자체 내부 심사(Audit) 계획 수립 및 실시
+2. **신청 및 수수료 납부**
+   - 인증 기관에 인증(사후/갱신) 신청서 제출 및 비용 정산
+3. **심사 수검**
+   - 인증 기관 현장 심사 수검 진행 (각 부서 협조 사항 확인)
+4. **부적합 사항 조치 및 시정조치 보고**
+   - 심사 결과 도출된 부적합 및 권고 사항에 대해 관련 부서 개선 대책 수립 요청
+   - 개선 조치 결과 취합 후 시정조치 보고서 작성하여 인증 기관 회신
+5. **인증서 관리 및 배포**
+   - 최종 발행된 인증서 사본을 인트라넷 게시판에 등록 및 사내 관련 부서 공유`;
+      sources = [
+        { num: 1, title: '품질보증파트_인증 관리 업무 절차.pptx', file_name: '품질보증파트_인증 관리 업무 절차.pptx', score: 0.94, url: '#', web_view_link: '#' }
       ];
     }
 
