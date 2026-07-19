@@ -155,31 +155,19 @@ const ImprovementProposalTab = ({ onBack }) => {
             <h2>💡 개선 제안서</h2>
             <div className="content-subheader-container">
               <span className="slogan-badge">Excel 자동 생성</span>
-              <span className="slogan-desc">문제점과 개선안을 입력하면 AI가 다듬어 제안서 양식 Excel을 자동 생성합니다</span>
+              <span className="slogan-desc">문제점과 개선안을 입력하면 내용을 정리하여 제안서 양식 Excel을 자동 생성합니다</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 워크플로우 스테퍼 */}
-      <div className="doc-assist-stepper">
-        {steps.map((step, idx) => (
-          <React.Fragment key={step.num}>
-            <div
-              className={`stepper-item ${currentStep === step.num ? 'active' : ''} ${currentStep > step.num ? 'completed' : ''}`}
-              onClick={() => { if (step.num <= currentStep) setCurrentStep(step.num); }}
-            >
-              <div className="stepper-circle">
-                {currentStep > step.num ? '✓' : step.num}
-              </div>
-              <div className="stepper-label">
-                <span className="stepper-title">{step.label}</span>
-                <span className="stepper-desc">{step.desc}</span>
-              </div>
-            </div>
-            {idx < steps.length - 1 && <div className="stepper-connector" />}
-          </React.Fragment>
-        ))}
+      {/* 현재 단계 헤더 표시기 */}
+      <div className="doc-assist-current-step">
+        <div className="current-step-number">{currentStep}</div>
+        <div className="current-step-body">
+          <span className="current-step-label">{steps[currentStep - 1]?.label}</span>
+          <span className="current-step-desc">{steps[currentStep - 1]?.desc}</span>
+        </div>
       </div>
 
       {/* 단계별 콘텐츠 */}
@@ -379,7 +367,7 @@ const ImprovementProposalTab = ({ onBack }) => {
             <div className="refine-section">
               <div className="refine-header">
                 <Sparkles size={18} />
-                <span>AI 내용 다듬기</span>
+                <span>내용 자동 다듬기</span>
                 {isRefined && <span className="refined-badge"><CheckCircle2 size={14} /> 다듬기 완료</span>}
               </div>
               <div className="refine-controls">
@@ -391,7 +379,7 @@ const ImprovementProposalTab = ({ onBack }) => {
                   {isRefining ? (
                     <><Loader2 size={16} className="upload-spinner" /> 다듬는 중...</>
                   ) : (
-                    <><Sparkles size={16} /> AI 다듬기</>
+                    <><Sparkles size={16} /> 내용 다듬기</>
                   )}
                 </button>
               </div>

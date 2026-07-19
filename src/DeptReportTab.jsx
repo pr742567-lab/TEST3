@@ -173,7 +173,7 @@ const DeptReportTab = ({ messages = [], onBack }) => {
   const steps = [
     { num: 1, label: '기본 정보 입력', icon: FileText, desc: '부서 및 기간 설정' },
     { num: 2, label: '실적/계획 입력', icon: ClipboardList, desc: '업무 항목 작성' },
-    { num: 3, label: 'AI 내용 다듬기', icon: Sparkles, desc: '말투 및 포맷 정제' },
+    { num: 3, label: '내용 자동 다듬기', icon: Sparkles, desc: '말투 및 포맷 정제' },
     { num: 4, label: '미리보기 & 내보내기', icon: Eye, desc: 'PPTX 다운로드' },
   ];
 
@@ -193,34 +193,19 @@ const DeptReportTab = ({ messages = [], onBack }) => {
             <h2>📊 진주공장 주요 업무보고</h2>
             <div className="content-subheader-container">
               <span className="slogan-badge">부서별 보고서</span>
-              <span className="slogan-desc">부서를 선택하고 업무 내용만 입력하면 AI가 다듬어 PPT를 자동 생성합니다</span>
+              <span className="slogan-desc">부서를 선택하고 업무 내용만 입력하면 내용을 정리하여 PPT를 자동 생성합니다</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 워크플로우 스테퍼 (4단계 진행 표시기) */}
-      <div className="doc-assist-stepper">
-        {steps.map((step, idx) => (
-          <React.Fragment key={step.num}>
-            <div
-              className={`stepper-item ${currentStep === step.num ? 'active' : ''} ${currentStep > step.num ? 'completed' : ''}`}
-              onClick={() => {
-                // 이미 진입했던 이전 단계로는 자유롭게 이동 가능하도록 제어
-                if (step.num <= currentStep) setCurrentStep(step.num);
-              }}
-            >
-              <div className="stepper-circle">
-                {currentStep > step.num ? '✓' : step.num}
-              </div>
-              <div className="stepper-label">
-                <span className="stepper-title">{step.label}</span>
-                <span className="stepper-desc">{step.desc}</span>
-              </div>
-            </div>
-            {idx < steps.length - 1 && <div className="stepper-connector" />}
-          </React.Fragment>
-        ))}
+      {/* 현재 단계 헤더 표시기 */}
+      <div className="doc-assist-current-step">
+        <div className="current-step-number">{currentStep}</div>
+        <div className="current-step-body">
+          <span className="current-step-label">{steps[currentStep - 1]?.label}</span>
+          <span className="current-step-desc">{steps[currentStep - 1]?.desc}</span>
+        </div>
       </div>
 
       {/* 단계별 콘텐츠 렌더링 영역 */}

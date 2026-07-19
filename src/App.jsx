@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { 
-  Send, 
-  Settings, 
-  Folder, 
-  BookOpen, 
-  RefreshCw, 
+import {
+  Send,
+  Settings,
+  Folder,
+  BookOpen,
+  RefreshCw,
   HelpCircle,
   ChevronDown,
   Menu,
@@ -13,7 +13,9 @@ import {
   Home,
   Compass,
   Sparkles,
-  GraduationCap
+  GraduationCap,
+  User,
+  FileText
 } from 'lucide-react';
 import DocAssistPanel from './DocAssistPanel';
 import OjtGuidePanel from './OjtGuidePanel';
@@ -76,7 +78,7 @@ const AccordionMessage = React.memo(({ content, sources = [], isTyping = false }
 
   return (
     <div className="markdown-wrapper">
-      <div 
+      <div
         className="markdown-content"
         style={{ position: 'relative', display: 'inline-block', width: '100%' }}
       >
@@ -91,7 +93,46 @@ const AccordionMessage = React.memo(({ content, sources = [], isTyping = false }
 function App() {
   // 활성화된 메뉴 관리 (초기 화면을 홈으로 설정)
   const [activeMenu, setActiveMenu] = useState('home');
-  
+
+  // 로그인 상태 및 사용자 정보 (시연용)
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [currentUser, setCurrentUser] = useState({
+    name: '전현웅',
+    department: '진주 스마트팩토리파트',
+    position: '대리',
+    employeeId: '20180090',
+    lastLogin: '2026-07-19 16:15:23'
+  });
+
+  // 최근 이용 내역 상태
+  const [recentActivities, setRecentActivities] = useState([
+    { id: 1, type: 'chat', title: 'CM3 블레이드 빔 개방 불량 조치', date: '2026. 07.19', desc: 'CM3 블레이드 빔 개방 불량 발생 시 에어 라인 및 솔밸브...' },
+    { id: 2, type: 'docAssist', title: '진주공장 위험성평가 개선 계획', date: '2026. 07.18', desc: '진주공장 2층 개구부 추락 위험에 대한 안전조치 및 계획...' },
+    { id: 3, type: 'ojtGuide', title: '신입사원 OJT 공정 교육 매뉴얼', date: '2026. 07.17', desc: '공장운영부, 공무부, 물류부 신입사원 정기 직무교육...' }
+  ]);
+
+  // 메뉴 이동 및 이용 내역 기록
+  const navigateToMenu = (menuKey, menuName) => {
+    setActiveMenu(menuKey);
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+    const newActivity = {
+      id: Date.now(),
+      type: menuKey,
+      title: menuName === '문서 네비게이션' ? '문서 네비게이션 가이드' : menuName === '문서 어시스트' ? '업무보고서 어시스트' : 'OJT 직무 교육 매뉴얼',
+      date: dateStr,
+      desc: `${menuName} 관련 사내 업무 문서를 확인하고 분석을 수행했습니다.`
+    };
+    setRecentActivities(prev => [newActivity, ...prev.filter(act => act.type !== menuKey).slice(0, 2)]);
+  };
+
+  const handleActivityClick = (type) => {
+    if (type === 'chat') {
+      setSelectedCategory(null); // 허브 화면으로 리셋
+    }
+    setActiveMenu(type);
+  };
+
   // 선택된 카테고리 탭 상태 변수 (디폴트: null - 카드 형태의 선택기 노출)
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -100,18 +141,19 @@ function App() {
     "트러블슈팅": [],
     "작업표준": [],
     "위험성평가": [],
-    "개선제안": []
+    "개선제안": [],
+    "업무매뉴얼": []
   });
 
   // 현재 카테고리에 해당하는 메시지 목록 유도 (기존 messages 변수 참조 코드 호환성 유지)
   const messages = selectedCategory ? (chatSessions[selectedCategory] || []) : [];
-  
+
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // 모바일 사이드바 열림 상태 제어 (사이드바 제거로 미사용 처리 가능)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
   // 홈 화면 초기화 리셋 함수 (로고 클릭 시 홈 화면으로 이동)
   const handleResetHome = () => {
     setChatSessions({
@@ -123,11 +165,11 @@ function App() {
     setActiveMenu('home');
     setIsSidebarOpen(false);
   };
-  
+
   // 글로벌 커스텀 안내 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  
+
   // 동적 추천 질문 목록 상태
   const [suggestions, setSuggestions] = useState([]);
 
@@ -147,65 +189,99 @@ function App() {
     }
     const pool = STATIC_SUGGESTIONS[selectedCategory] || [];
     let suggestionsList = [...pool];
-    
-    // 만약 '트러블슈팅' 카테고리라면, 맨 앞에 시연용 핵심 질문 2개를 강제 고정!
+
+    // 만약 '트러블슈팅' 카테고리라면, 맨 앞에 시연용 핵심 질문 3개를 강제 고정!
     if (selectedCategory === '트러블슈팅') {
       const targetQuestion1 = "PM3 1P Nip 압력 불균형 점검 및 조치하려면?";
       const targetQuestion2 = "폐수 처리장 용존산소량(DO) 급감 시 폭기조 송풍기 점검";
-      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2);
+      const targetQuestion3 = "CM3 블레이드 빔 개방 불량일 때 조치 방법";
+      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3 && sug.text !== "CM3 블레이드 빔 개방 불량 시 실린더 에어 라인 조치");
+      suggestionsList.unshift({ text: targetQuestion3 });
       suggestionsList.unshift({ text: targetQuestion2 });
       suggestionsList.unshift({ text: targetQuestion1 });
     } else if (selectedCategory === '작업표준') {
-      const targetQuestion = "CM2 Cut Knife 교체하는 방법은?";
-      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion);
-      suggestionsList.unshift({ text: targetQuestion });
+      const targetQuestion1 = "CM2 Cut Knife 교체하는 방법은?";
+      const targetQuestion2 = "지필유도판 정전기 방지지 교체 작업표준";
+      const targetQuestion3 = "CM3 Scanner Sensor 청소 및 교체 작업 표준은?";
+      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3 && sug.text !== "CM3 Scanner Sensor 청소 및 교체 작업 표준");
+      suggestionsList.unshift({ text: targetQuestion3 });
+      suggestionsList.unshift({ text: targetQuestion2 });
+      suggestionsList.unshift({ text: targetQuestion1 });
     } else if (selectedCategory === '위험성평가') {
-      const targetQuestion = "CM2 가동 전 발생할 수 있는 위험 요인은?";
-      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion);
-      suggestionsList.unshift({ text: targetQuestion });
+      const targetQuestion1 = "CM2 가동 전 발생할 수 있는 위험 요인은?";
+      const targetQuestion2 = "밀폐공간 내부 청소 작업 시 안전 대책";
+      const targetQuestion3 = "독타 교체 작업 위험성 평가";
+      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3 && sug.text !== "밀폐공간(Machine Chest) 내부 청소 작업 안전 대책" && sug.text !== "초지 드라이 파트 입구 닥터 나이프 교체 위험성평가");
+      suggestionsList.unshift({ text: targetQuestion3 });
+      suggestionsList.unshift({ text: targetQuestion2 });
+      suggestionsList.unshift({ text: targetQuestion1 });
     } else if (selectedCategory === '개선제안') {
-      const targetQuestion = "PM3 Reel Scanner Ash Sensor 작동 불량 개선";
-      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion);
-      suggestionsList.unshift({ text: targetQuestion });
+      const targetQuestion1 = "MX#1.2 DIP 및 MX1 CB TOWER 투입방법 개선";
+      const targetQuestion2 = "PM1 3번 Felt save all 설치 건";
+      const targetQuestion3 = "PM3 Press pulper A/G & Pump 가동 감소로 전력절감";
+      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3 && sug.text !== "스캐너 센서 방진 커버 이중 격벽 도입 제안" && sug.text !== "PM3 Reel Scanner Ash Sensor 작동 불량 개선");
+      suggestionsList.unshift({ text: targetQuestion3 });
+      suggestionsList.unshift({ text: targetQuestion2 });
+      suggestionsList.unshift({ text: targetQuestion1 });
     } else if (selectedCategory === '업무매뉴얼') {
-      const targetQuestion1 = "자재관리파트의 고정자산 처분 절차는 어떻게 되나요?";
-      const targetQuestion2 = "생산부의 원단위 분석 및 실적 산출 방법은 무엇인가요?";
-      const targetQuestion3 = "품질보증파트의 인증 관리 업무 절차는 어떻게 되나요?";
-      suggestionsList = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3);
+      const targetQuestion1 = "저장품 기자재 입고는 어떻게 하나요?";
+      const targetQuestion2 = "설비 일상 보전 및 유지 관리 매뉴얼은?";
+      const targetQuestion3 = "제품 파손시 업무 절차는?";
+      suggestionsList = suggestionsList.filter(sug => 
+        sug.text !== targetQuestion1 && 
+        sug.text !== targetQuestion2 && 
+        sug.text !== targetQuestion3 && 
+        sug.text !== "자재관리파트의 고정자산 처분 절차는 어떻게 되나요?" &&
+        sug.text !== "생산부의 원단위 분석 및 실적 산출 방법은 무엇인가요?" &&
+        sug.text !== "품질보증파트의 인증 관리 업무 절차는 어떻게 되나요?"
+      );
       suggestionsList.unshift({ text: targetQuestion3 });
       suggestionsList.unshift({ text: targetQuestion2 });
       suggestionsList.unshift({ text: targetQuestion1 });
     }
-    
+
     // 무작위 셔플 후 상위 3개만 매핑 (고정 질문은 무조건 처음에 유지)
     if (selectedCategory === '트러블슈팅') {
       const targetQuestion1 = "PM3 1P Nip 압력 불균형 점검 및 조치하려면?";
       const targetQuestion2 = "폐수 처리장 용존산소량(DO) 급감 시 폭기조 송풍기 점검";
-      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2);
-      const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
-      setSuggestions([{ text: targetQuestion1 }, { text: targetQuestion2 }, ...shuffledRest.slice(0, 1)]);
+      const targetQuestion3 = "CM3 블레이드 빔 개방 불량일 때 조치 방법";
+      setSuggestions([{ text: targetQuestion1 }, { text: targetQuestion2 }, { text: targetQuestion3 }]);
     } else if (selectedCategory === '작업표준') {
-      const targetQuestion = "CM2 Cut Knife 교체하는 방법은?";
-      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion);
-      const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
-      setSuggestions([{ text: targetQuestion }, ...shuffledRest.slice(0, 2)]);
+      const targetQuestion1 = "CM2 Cut Knife 교체하는 방법은?";
+      const targetQuestion2 = "지필유도판 정전기 방지지 교체 작업표준";
+      const targetQuestion3 = "CM3 Scanner Sensor 청소 및 교체 작업 표준은?";
+      setSuggestions([
+        { text: targetQuestion1 },
+        { text: targetQuestion2 },
+        { text: targetQuestion3 }
+      ]);
     } else if (selectedCategory === '위험성평가') {
-      const targetQuestion = "CM2 가동 전 발생할 수 있는 위험 요인은?";
-      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion);
-      const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
-      setSuggestions([{ text: targetQuestion }, ...shuffledRest.slice(0, 2)]);
+      const targetQuestion1 = "CM2 가동 전 발생할 수 있는 위험 요인은?";
+      const targetQuestion2 = "밀폐공간 내부 청소 작업 시 안전 대책";
+      const targetQuestion3 = "독타 교체 작업 위험성 평가";
+      setSuggestions([
+        { text: targetQuestion1 },
+        { text: targetQuestion2 },
+        { text: targetQuestion3 }
+      ]);
     } else if (selectedCategory === '개선제안') {
-      const targetQuestion = "PM3 Reel Scanner Ash Sensor 작동 불량 개선";
-      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion);
-      const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
-      setSuggestions([{ text: targetQuestion }, ...shuffledRest.slice(0, 2)]);
+      const targetQuestion1 = "MX#1.2 DIP 및 MX1 CB TOWER 투입방법 개선";
+      const targetQuestion2 = "PM1 3번 Felt save all 설치 건";
+      const targetQuestion3 = "PM3 Press pulper A/G & Pump 가동 감소로 전력절감";
+      setSuggestions([
+        { text: targetQuestion1 },
+        { text: targetQuestion2 },
+        { text: targetQuestion3 }
+      ]);
     } else if (selectedCategory === '업무매뉴얼') {
-      const targetQuestion1 = "자재관리파트의 고정자산 처분 절차는 어떻게 되나요?";
-      const targetQuestion2 = "생산부의 원단위 분석 및 실적 산출 방법은 무엇인가요?";
-      const targetQuestion3 = "품질보증파트의 인증 관리 업무 절차는 어떻게 되나요?";
-      const rest = suggestionsList.filter(sug => sug.text !== targetQuestion1 && sug.text !== targetQuestion2 && sug.text !== targetQuestion3);
-      const shuffledRest = [...rest].sort(() => 0.5 - Math.random());
-      setSuggestions([{ text: targetQuestion1 }, { text: targetQuestion2 }, { text: targetQuestion3 }, ...shuffledRest.slice(0, 0)]);
+      const targetQuestion1 = "저장품 기자재 입고는 어떻게 하나요?";
+      const targetQuestion2 = "설비 일상 보전 및 유지 관리 매뉴얼은?";
+      const targetQuestion3 = "제품 파손시 업무 절차는?";
+      setSuggestions([
+        { text: targetQuestion1 },
+        { text: targetQuestion2 },
+        { text: targetQuestion3 }
+      ]);
     } else {
       const shuffled = [...suggestionsList].sort(() => 0.5 - Math.random());
       setSuggestions(shuffled.slice(0, 3));
@@ -236,17 +312,109 @@ function App() {
     }));
     setIsLoading(true);
 
+    // 최근 이용 내역에 검색 기록 추가
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+    const newActivity = {
+      id: Date.now(),
+      type: 'chat',
+      title: `${selectedCategory} 지식 검색`,
+      date: dateStr,
+      desc: `"${query.slice(0, 15)}${query.length > 15 ? '...' : ''}" 관련 RAG 탐색 및 분석 수행`
+    };
+    setRecentActivities(prev => [newActivity, ...prev.filter(act => act.title !== newActivity.title).slice(0, 2)]);
+
     // 모바일 환경일 경우 질문 전송 시 사이드바를 자동으로 닫음
     setIsSidebarOpen(false);
 
     // 질문 검색 매칭 분석을 위한 정형화
     const normalizedQuery = query.replace(/\s+/g, '').toLowerCase();
-    
+
+    // 신규. 작업표준: CM3 Scanner Sensor 청소 및 교체 작업 표준
+    const isCm3SensorCleaningScenario =
+      normalizedQuery.includes("cm3scannersensor") ||
+      (normalizedQuery.includes("cm3") && normalizedQuery.includes("scanner") && normalizedQuery.includes("청소")) ||
+      (normalizedQuery.includes("cm3") && normalizedQuery.includes("sensor") && normalizedQuery.includes("청소")) ||
+      normalizedQuery.includes("cm3scannersensor청소및교체작업표준");
+
+    // 신규. 작업표준: 지필유도판 정전기 방지지 교체 작업표준
+    const isStaticFabricScenario =
+      normalizedQuery.includes("지필유도판") ||
+      normalizedQuery.includes("정전기방지지") ||
+      (normalizedQuery.includes("정전기") && normalizedQuery.includes("방지지")) ||
+      normalizedQuery.includes("지필유도판정전기방지지교체작업표준");
+
+    // 신규. 위험성평가: 밀폐공간 내부 청소 작업 시 안전 대책
+    const isConfinedSpaceScenario =
+      normalizedQuery.includes("밀폐공간") ||
+      normalizedQuery.includes("내부청소") ||
+      (normalizedQuery.includes("밀폐") && normalizedQuery.includes("안전대책")) ||
+      normalizedQuery.includes("밀폐공간내부청소작업시안전대책");
+
+    // 신규. 위험성평가: 독타 교체 작업 위험성 평가
+    const isDoctorReplaceScenario =
+      normalizedQuery.includes("독타교체") ||
+      normalizedQuery.includes("닥터교체") ||
+      (normalizedQuery.includes("독타") && normalizedQuery.includes("위험성평가")) ||
+      normalizedQuery.includes("독타교체작업위험성평가");
+
+    // 신규. 개선제안: MX#1.2 DIP 및 MX1 CB TOWER 투입방법 개선
+    const isDipTowerScenario =
+      normalizedQuery.includes("diptower") ||
+      normalizedQuery.includes("cbtower") ||
+      normalizedQuery.includes("투입방법개선") ||
+      normalizedQuery.includes("mx#1.2dip") ||
+      normalizedQuery.includes("cb타워");
+
+    // 신규. 개선제안: PM1 3번 Felt save all 설치 건
+    const isFeltSaveAllScenario =
+      normalizedQuery.includes("saveall") ||
+      normalizedQuery.includes("세이브올") ||
+      (normalizedQuery.includes("felt") && normalizedQuery.includes("설치")) ||
+      normalizedQuery.includes("pm13번felt") ||
+      normalizedQuery.includes("pm13번feltsaveall");
+
+    // 신규. 개선제안: PM3 Press pulper A/G & Pump 가동 감소로 전력절감
+    const isPressPulperScenario =
+      normalizedQuery.includes("presspulper") ||
+      normalizedQuery.includes("프레스펄퍼") ||
+      (normalizedQuery.includes("pulper") && normalizedQuery.includes("가동")) ||
+      normalizedQuery.includes("pm3presspulper") ||
+      normalizedQuery.includes("가동감소로전력절감");
+
+    // 신규. 업무매뉴얼: 저장품 기자재 입고는 어떻게 하나요?
+    const isVmiIncomingScenario =
+      normalizedQuery.includes("기자재입고") ||
+      normalizedQuery.includes("vmi입고") ||
+      (normalizedQuery.includes("저장품") && normalizedQuery.includes("입고")) ||
+      normalizedQuery.includes("저장품기자재입고");
+
+    // 신규. 업무매뉴얼: 설비 일상 보전 및 유지 관리 매뉴얼은?
+    const isMaintenanceScenario =
+      normalizedQuery.includes("설비일상보전") ||
+      normalizedQuery.includes("유지관리매뉴얼") ||
+      (normalizedQuery.includes("설비") && normalizedQuery.includes("보전") && normalizedQuery.includes("유지")) ||
+      normalizedQuery.includes("설비일상보전및유지관리매뉴얼");
+
+    // 신규. 업무매뉴얼: 제품 파손시 업무 절차는?
+    const isDamagedProductScenario =
+      normalizedQuery.includes("제품파손") ||
+      normalizedQuery.includes("파손시업무") ||
+      (normalizedQuery.includes("제품") && normalizedQuery.includes("파손") && normalizedQuery.includes("절차")) ||
+      normalizedQuery.includes("제품파손시업무절차");
+
+    // 신규. 트러블슈팅: CM3 블레이드 빔 개방 불량 조치
+    const isBladeBeamScenario =
+      normalizedQuery.includes("블레이드빔") ||
+      normalizedQuery.includes("개방불량") ||
+      (normalizedQuery.includes("cm3") && normalizedQuery.includes("블레이드")) ||
+      normalizedQuery.includes("cm3블레이드빔개방불량");
+
     // 1. 트러블슈팅: PM3 닙 압력 관련
-    const isNipPressureScenario = 
-      normalizedQuery.includes("nip") || 
-      normalizedQuery.includes("닙압력") || 
-      normalizedQuery.includes("압력불균형") || 
+    const isNipPressureScenario =
+      normalizedQuery.includes("nip") ||
+      normalizedQuery.includes("닙압력") ||
+      normalizedQuery.includes("압력불균형") ||
       normalizedQuery.includes("압력저하") ||
       normalizedQuery.includes("pm3");
 
@@ -328,7 +496,366 @@ function App() {
     let sources = [];
     let matched = false;
 
-    if (isNipPressureScenario) {
+    if (isCm3SensorCleaningScenario) {
+      matched = true;
+      fullAnswer = `CM3 SCANNER SENSOR 청소 작업 표준은 다음과 같습니다.
+
+---
+
+### 1. 작업 준비 및 스캐너 헤드 분리
+* 안전모와 안전화를 착용하십시오.
+* LOCAL TOUCH PANEL에서 CLUTCH OPEN BUTTON을 누르십시오.
+* 생산 중인 종이에 배임을 방지하기 위하여 SCANNER HEAD를 LIMIT SWITCH까지 당기십시오.
+* 손으로 SCANNER HEAD를 밀어서 상하 헤드를 분리하십시오.
+
+---
+
+### 2. SENSOR 표면 청소
+* 준비된 청소용 가제를 이용하여 SENSOR 표면을 청소하십시오.
+
+---
+
+### 3. 스캐너 헤드 재결합 및 시스템 복귀
+* LOCAL TOUCH PANEL에서 CLUTCH CLOSE BUTTON을 누르십시오.
+* LOCAL TOUCH PANEL에서 AUTO MODE BUTTON을 눌러 AUTO MODE를 선택하십시오.
+* LOCAL TOUCH PANEL에서 STDZ BUTTON을 눌러 SENSOR STDZ를 실행하십시오.
+
+---
+
+### 4. 확인 작업
+* OP STATION에서 SENSOR 측정 DATA의 이상 유무 및 측정 상태를 확인하십시오.
+
+제공된 문서에는 CM3 Scanner Sensor의 청소 방법에 대한 내용만 있으며, 교체 작업 표준에 대한 정보는 포함되어 있지 않습니다.`;
+      sources = [
+        { num: 1, title: 'CJ-106-020)_CM3 SCANNER SENSOR 청소방법 안전 작업표준서.docx', file_name: 'CJ-106-020)_CM3 SCANNER SENSOR 청소방법 안전 작업표준서.docx', score: 0.785, url: '#', web_view_link: '#' }
+      ];
+    } else if (isStaticFabricScenario) {
+      matched = true;
+      fullAnswer = `지필유도판 정전기 방지지 교체 작업표준은 다음과 같습니다.
+
+지필 정전기는 지필 펄럭거림이나 오버랩 불량으로 나타날 수 있으며, 장도부 지필유도판의 정전기 방지지를 교체하여 해결합니다.
+
+---
+
+### 1. 문제 진단 및 확인
+* 재단 시 정전기로 인한 지필 펄럭거림 또는 오버랩 불량이 발생하는지 확인합니다.
+
+---
+
+### 2. 작업 목적
+* 지필 정전기를 방지하여 원활한 재단 작업을 위해 재단4호기 장도부 지필유도판에 정전기 방지지를 안전하게 부착합니다.
+
+---
+
+### 3. 정전기 방지지 교체 작업 절차
+
+#### 3.1 공구 및 준비물 준비
+* 장도부 지필 유도판에 부착하기 위한 정전기 방지지를 준비합니다.
+* 칼, OPP 테이프, 후레쉬 등을 준비합니다.
+
+#### 3.2 준비 작업 및 안전 수칙
+* 기계를 중지하고 기계가동금지 푯말을 부착합니다.
+* 정전기 방지지 부착 전 주위 위험 요소를 점검하고 기계 이상 유무를 확인합니다.
+* 끼임 사고를 방지하기 위해 원롤, 드럼롤 주변의 기계 사이에 안전 공간을 확보합니다.
+* 안전모, 안전화, 각반, 귀마개, 장갑 등 필요한 안전보호구를 철저히 착용합니다.
+
+#### 3.3 정전기 방지지 부착 (본작업)
+* 정전기 방지지 2매를 OPP 테이프를 사용하여 연결합니다.
+* 연결된 정전기 방지지를 장도와 웜롤 사이 지필유도판에 부착합니다.
+* 작업 전/후 스트레칭을 실시하여 요통을 예방합니다.
+* 작업 공간이 협소하므로 주변을 확인하여 부딪히지 않도록 주의하며 작업합니다.
+
+#### 3.4 확인 작업
+* 정전기 방지지가 정상적으로 부착되었는지 확인합니다.
+* 기계를 가동하여 재단 시 정전기로 인한 지필 펄럭거림, 오버랩 불량이 더 이상 발생하지 않는지 확인합니다.
+
+#### 3.5 마무리 작업
+* 사용한 공구를 정위치시키고 주변을 정리합니다.
+* 기계를 재가동시킵니다.`;
+      sources = [
+        { num: 1, title: '재단4호기 장도부 지필유도판 정전기 방지지 교체 작업표준(제정문서).docx', file_name: '재단4호기 장도부 지필유도판 정전기 방지지 교체 작업표준(제정문서).docx', score: 0.90, url: '#', web_view_link: '#' }
+      ];
+    } else if (isConfinedSpaceScenario) {
+      matched = true;
+      fullAnswer = `밀폐공간 내부 청소 작업 시 다음 안전 대책을 철저히 준수해야 합니다.
+
+---
+
+### 1. 밀폐공간 작업 전 준비 및 안전 조치
+* 작업 전 필수 안전철칙 교육을 이수하고 충분히 숙지해야 합니다.
+* 밀폐공간작업 프로그램을 연 1회 수립하고, 안전운영부 주관으로 프로그램 추진 일정을 수립하여 평가를 실시합니다.
+* 밀폐공간 출입 전 산소 및 가스농도를 반드시 측정합니다.
+* 작업 구역에 감시자(관리감독자)를 배치하여 상시 감독합니다.
+
+---
+
+### 2. 밀폐공간 출입 및 작업 시 안전 지침 (Unwinder/Winder Pit)
+* 가능하면 출입문을 개방한 후 외부에서 내부 청소를 실시합니다.
+* 내부 출입이 필요한 경우 밀폐공간 작업 절차를 반드시 준수해야 합니다.
+* 내부 출입 전 산소농도를 다시 측정한 후 진입합니다.
+* 작업 구역 감시자(관리감독자)를 배치해야 합니다.
+
+---
+
+### 3. 밀폐공간 출입 제한 및 작업 지침 (CM3 Doctor Collection Tank)
+* 출입문이 협소하여 내부 출입이 불가합니다.
+* 출입문에 신체 일부가 노출되는 경우에도 밀폐공간 작업 절차를 준수합니다.
+* 작업 구역 감시자(관리감독자)를 배치해야 합니다.
+
+---
+
+### 4. 고압세척기 사용 시 안전 지침
+* 피트 주변 및 내부 이물질 제거를 위해 고압세척기 사용 시 이물질 비산 위험이 있습니다.
+* 1회용 작업복, 보안경, 방진마스크를 반드시 착용합니다.
+* 작업 시 주변을 확인한 후 작업을 시작합니다.
+
+---
+
+### 5. PIT 청소 시 추가 안전 지침
+* PIT 청소 시 A/G 오작동으로 인한 말림 위험에 대비하여:
+* Winder Pit A/G에 LOTO(Lock Out, Tag Out)를 적용합니다.
+* SP Room에 태그(tag)를 부착합니다.
+* 와인더 Pit 하층 출입문 개방 작업 중 전도로 인한 추락 위험에 대비하여:
+* 이동식 사다리를 비치하여 해당 작업 시 활용합니다.`;
+      sources = [
+        { num: 1, title: '[가공2파트] 유첨4. 2026년 가공2파트 정기 위험성 평가_V1.0.xlsx', file_name: '[가공2파트] 유첨4. 2026년 가공2파트 정기 위험성 평가_V1.0.xlsx', score: 0.679, url: '#', web_view_link: '#' }
+      ];
+    } else if (isDoctorReplaceScenario) {
+      matched = true;
+      fullAnswer = `독타 교체 작업 위험성 평가는 다음과 같습니다.
+
+---
+
+### 1. Doctor 교체 작업 시 추락 위험
+* 위험: C/D Doctor 교체 시 #2 cylinder dryer 2층 개구부 추락 위험이 있습니다. 또한, 각 헤드 Cleaning Doctor 교체 시 족장 북쪽 안전발판 미설치로 인한 발빠짐 및 추락 위험이 존재합니다.
+* 방지 대책:
+* 작업 공간에 안전 난간을 설치하세요.
+* 추락주의 안전표지판을 부착하고, 안전난간 및 바닥부를 추락 위험 인지용으로 도색하세요.
+* 높은 곳 접근 시에는 반드시 안전대를 착용하고 체결 후 작업하세요.
+* 독타 취입취출용 족장을 설치하고, 안전 발판을 30cm 너비로 설치하세요.
+
+---
+
+### 2. Doctor 취급 및 교체 시 베임 위험
+* 위험: Dry cylinder Doctor 취급 및 취출입 시, 또는 Doctor 취출입 및 점검 시 날에 의한 베임 위험이 있습니다.
+* 방지 대책:
+* 방검 장갑을 착용하세요.
+* 작업은 반드시 2인 1조로 진행하세요.
+* 작업 간 복명복창을 실시하여 상호 안전을 확인하세요.
+
+---
+
+### 3. Doctor 교체 및 점검 시 전도 위험
+* 위험: Doctor 교체 및 점검, 청소 시 바닥의 물기로 인해 미끄러져 넘어질 위험이 있습니다.
+* 방지 대책:
+* 작업 전 바닥의 물기를 완전히 제거한 후 작업을 시작하세요.
+
+---
+
+### 4. Doctor BOX 이동 시 근골격계 위험
+* 위험: 독타 BOX를 이동할 때 작업자의 요통이 발생할 수 있습니다.
+* 방지 대책:
+* 독타 BOX 이동 시에는 반드시 손수레를 이용하여 운반하세요.
+* 작업 전 충분한 스트레칭을 실시하여 몸을 풀어주세요.`;
+      sources = [
+        { num: 1, title: '[가공2파트] 유첨4. 2026년 가공2파트 정기 위험성 평가_V1.0.xlsx', file_name: '[가공2파트] 유첨4. 2026년 가공2파트 정기 위험성 평가_V1.0.xlsx', score: 0.679, url: '#', web_view_link: '#' }
+      ];
+    } else if (isDipTowerScenario) {
+      matched = true;
+      fullAnswer = `MX#1.2 DIP 및 MX1 CB TOWER 투입방법 개선에 대한 제안 내용은 다음과 같습니다.
+
+---
+
+### 1. 문제점 및 현상
+현재 MX#1.2 DIP 및 MX1 CB TOWER의 사용 방법은 다음과 같이 두 라인 모두 UB#2 C/H를 거쳐 TOWER C/H로 투입되는 순서로 작업이 이루어지고 있습니다.
+* **기존 경로 1**: DIP TOWER → UB#2 C/H → TOWER C/H
+* **기존 경로 2**: MX1 CB TOWER → UB#2 C/H → TOWER C/H
+
+---
+
+### 2. 개선안 (대책)
+MX#1.2 DIP 및 MX1 CB TOWER에서 MX2 UB#2 C/H로 가는 배관을 **MX#2 TOWER C/H 행으로 가는 배관 라인으로 신설**합니다.
+이를 통해 MX2 UB#2 C/H를 미사용하도록 전환함으로써, **A/G(교반기) 및 PUMP 가동을 중지하여 전력을 절감**할 수 있습니다.
+
+---
+
+### 3. 기대 효과
+* **연간 전력 절감 예상 금액**: 총 **19,533,135원 / 년**
+* **효과 산출 근거** (PM1 가동일수 346.4일/년, 전력단가 102.6원/kW 기준 적용):
+  * **A/G (교반기)**: 22kW × 70% (부하율) × 102.6원/kW × 24h/d × 346.4d/a = **13,135,820원 / 년**
+  * **PUMP (펌프)**: 15kW × 50% (부하율) × 102.6원/kW × 24h/d × 346.4d/a = **6,397,315원 / 년**`;
+      sources = [
+        { num: 1, title: '2021-02-299.pdf', file_name: '2021-02-299.pdf', score: 0.95, url: '#', web_view_link: '#' }
+      ];
+    } else if (isFeltSaveAllScenario) {
+      matched = true;
+      fullAnswer = `PM1 3번 Felt save all 설치 건에 대한 제안 내용은 다음과 같습니다.
+
+---
+
+### 1. 문제점 및 현상
+현재 PM1 3번 Felt 고압 및 저압 샤워 배관 아래에 save all(회수 장치)이 설치되어 있지 않습니다.
+이로 인해 사용한 용수가 그대로 낙하하여 하수구로 버려지고 있어, 불필요한 폐수 처리 비용이 상시 발생하고 있습니다.
+
+---
+
+### 2. 개선안 (대책)
+3번 Felt 고압 및 저압 샤워 배관 하부로 **save all을 설치**합니다.
+* 3P 샤워수에서 발생한 용수를 한곳으로 수거합니다.
+* 모아진 용수를 **seal over T/K(탱크)로 이송하여 공정수로 재사용**합니다.
+* 이를 통해 원지 생산 용수를 절감하고 폐수 처리 비용을 낮춥니다.
+
+---
+
+### 3. 기대 효과
+* **폐수 처리 절감 금액**:
+  * **월간 절감 금액**: **330,739원 / 월**
+  * **연간 절감 금액**: **3,968,870원 / 년**
+* **효과 산출 근거**:
+  * 3번 Felt 샤워수 배출량: **47.52 m³/일**
+  * 폐수 처리 부담금 단가: **Ton(m³)당 232원**
+  * 산출식: 47.52 m³/일 × 232원/Ton × 30일 = 약 330,739원 / 월 (연간 약 3,968,870원)`;
+      sources = [
+        { num: 1, title: '2023-01-353.pdf', file_name: '2023-01-353.pdf', score: 0.95, url: '#', web_view_link: '#' }
+      ];
+    } else if (isPressPulperScenario) {
+      matched = true;
+      fullAnswer = `PM3 Press pulper A/G & Pump 가동 감소로 전력절감에 대한 제안 내용은 다음과 같습니다.
+
+---
+
+### 1. 문제점 및 현상
+1. Press pulper로 Center roll doctor 클리닝 샤워수가 지속적으로 유입됨에 따라 Pulper 수위 레벨이 상승하여 AG(교반기) & Pump가 정기적(일 평균 9~10회, 약 4분/회)으로 가동되고 있습니다. (지절 시 가동 이외에도 주기적으로 40분/일 가동됨)
+   * AG & Pump 동작: 수위 레벨 92% 가동 시작, 45%일 때 중지됨.
+2. 중지/보수 초출 및 지절을 제외하고 Press pulper A/G & Pump 가동을 중지할 수 있다면 **2,243kW/일 (64,721kW/월) 전력을 절감**할 수 있습니다.
+   * AG motor 130kW (부하율 80%), Pump motor 37kW (부하율 66%)
+
+---
+
+### 2. 개선안 (대책)
+**Press pulper overflow 신규 배관 및 On/Off 밸브 설치**
+* Press pulper level 약 75% ~ 80% 지점에 Overflow 배관 및 On/Off 밸브를 신설하여 정상 운전 중 샤워수에 의한 수위 상승 시 폐수로 배출되게 합니다.
+* 이를 통해 불필요한 AG & Pump 가동을 중지하고, 지절 시에는 밸브가 닫혀 기존과 동일하게 AG & Pump가 가동되도록 구성합니다.
+* 현재 Press pulper에서 UB 타워로 펌핑된 샤워수는 파지와 혼합되어 Thickner를 거쳐 PDF에서 처리되고 있으나 사용처가 없어 폐수로 드레인 되고 있으므로, Press pulper에서 직접 폐수로 배출되더라도 폐수 총량은 현 수준으로 유지되고 오히려 SS(부유물질) 농도는 낮아질 것으로 판단됩니다.
+
+---
+
+### 3. 기대 효과
+* **전력 절감 효과**: 총 **2,599kW / 월** 절감
+  * A/G 중지: 가동시간 40분(0.7hr)/일 × 130kW × 부하율 80% = **72.8kW/일 절감**
+  * Pump 중지: 가동시간 40분(0.7hr)/일 × 37kW × 부하율 66% = **17.1kW/일 절감**
+* **절감 금액**: 연간 약 **4,693천원** (월 약 391천원 절감)
+  * 산출식: 31,733kW (A/G+Pump) × 147.9원/kW (23년 사업계획 단가) × 12개월`;
+      sources = [
+        { num: 1, title: '2023-03-423.pdf', file_name: '2023-03-423.pdf', score: 0.95, url: '#', web_view_link: '#' }
+      ];
+    } else if (isVmiIncomingScenario) {
+      matched = true;
+      fullAnswer = `자재관리파트의 저장품 기자재(VMI) 입고 업무 절차는 다음과 같습니다.
+
+---
+
+### 1. 업무 목적
+공급사 관리재고(VMI)의 효율적인 재고관리를 목적으로 합니다.
+* **VMI (Vendor Managed Inventory)**: 공급사 관리재고로 납품업체에서 관리하는 자재입니다. 공장 재고로 입력되어 있지는 않으나 납품업체의 자산이며, 사용할 때마다 PM 오더를 생성하여 출고하고 월말 정산 시 대금을 지급합니다. (예: 벨트, 베어링 등)
+
+---
+
+### 2. 세부 업무 절차
+1. **일 실적 공유**
+   * VMI 재고 사용 내역을 Daily로 관리하여 사용 실적을 납품업체에 공유합니다.
+2. **납품 일정 확인**
+   * 업체에서는 공유받은 사용 실적을 토대로 납품 재고를 확인하고, 관리담당자에게 납품 내역 및 일정을 통보합니다.
+3. **검수**
+   * 납품업체가 공장에 입고되면 자재검수를 실시합니다.
+   * 거래명세표상의 자재와 실제 입고된 자재의 수량 및 규격이 일치하는지 확인합니다.
+   * 검수 결과가 일치하면 거래명세표에 서명한 후 거래명세표를 보관합니다.
+4. **SAP 및 창고 입고 처리 (MB1C)**
+   * SAP 시스템에서 MB1C 트랜잭션을 실행합니다.
+   * 증빙일, 전기일, 이동유형, 플랜트, 저장위치, 특별 재고 입력을 실행합니다.
+   * 공급업체, 수령인, 자재 내역을 입력한 후 전산 입고 처리를 완료합니다.`;
+      sources = [
+        { num: 1, title: '업무메뉴얼 유첨_기자재(VMI) 입고.pptx', file_name: '업무메뉴얼 유첨_기자재(VMI) 입고.pptx', score: 0.95, url: '#', web_view_link: '#' }
+      ];
+    } else if (isMaintenanceScenario) {
+      matched = true;
+      fullAnswer = `설비관리1반의 기계 설비 작업 일상 보전 및 유지 관리 매뉴얼은 다음과 같습니다.
+
+---
+
+### 1. 업무 목적
+기계 설비 작업에 대한 이력 관리를 목적으로 합니다.
+
+---
+
+### 2. 세부 업무 절차
+1. **PM 오더 생성/계획 및 자재 예약**
+   * PM 오더 생성 시 오더 유형, 작업 위치 및 작업자, 사용 자재 등의 정보를 기입하여 예약을 진행하고 작업을 설계합니다.
+2. **PM 오더 승인 및 출력**
+   * 상급자 결재 등을 통해 PM 오더가 승인되면, 관련 PM 오더를 전산 시스템에서 출력합니다.
+3. **자재 불출**
+   * ① PM 오더에 자재 예약이 정상적으로 걸려 있는 상태인지 여부를 확인합니다.
+   * ② 자재 불출 시 출력한 PM 오더의 바코드 또는 불출 기능을 활용하여 제출 및 수령합니다.
+4. **작업 수행**
+   * 안전작업허가서를 발행한 후 현장 정비 작업을 안전하게 진행합니다.
+   * 작업 완료 후 담당자는 작업일보를 작성하여 공무부서로 최종 제출합니다.
+5. **작업 완료 확정**
+   * 해당 PM 오더의 현장 작업이 완료된 후, 시스템 필요 입력란에 정비 내용 등 추가 정보를 성실히 입력하고 최종 확인란을 체크한 뒤 저장합니다.
+6. **정산 처리**
+   * 시스템의 PM 오더 정산 결과 리스트를 호출하여 실행함으로써 정산 처리를 진행합니다.
+7. **비즈니스 완료**
+   * PM 오더 내 비즈니스 완료(Business Close) 처리를 실행하여 해당 설비 정비 작업을 최종 종료합니다.`;
+      sources = [
+        { num: 1, title: '업무매뉴얼_설비 일상 보전 및 유지 관리.pptx', file_name: '업무매뉴얼_설비 일상 보전 및 유지 관리.pptx', score: 0.95, url: '#', web_view_link: '#' }
+      ];
+    } else if (isDamagedProductScenario) {
+      matched = true;
+      fullAnswer = `물류관리파트의 제품 파손 발생 시 처리 업무 절차는 다음과 같습니다.
+
+---
+
+### 1. 업무 목적
+운송 사고, 지게차 찍힘, 제품 전복 등으로 인해 제품 파손 발생 시, 해당 재고를 신속히 **보류 재고로 전환하여 출고 보류(블로킹) 처리**함으로써 비정상 제품이 오출고되는 것을 방지합니다.
+
+---
+
+### 2. 세부 업무 절차
+1. **가용 → 보류 전환**
+   * **재고 정보 확인**: T-code \`zmsr02\` (재고조회)에서 자재코드, 배치, 재고일수, MTO/MTS 여부, 담당 영업사원, 거래처 정보를 확인합니다.
+   * **제품 정보 상세 확인**: T-code \`zbar002\` (바코드 상세조회)에서 바코드 수량, 보관 구역 등을 점검합니다.
+   * **재고 이전 실행**: T-code \`zba004\` (재고이전 가용→보류)를 사용하여 플랜트, 저장위치, 보관위치, 보관구역 등을 입력하고 바코드 및 전환 수량을 지정하여 전환을 실행합니다.
+2. **월별 파손리스트 정리 및 송부**
+   * 월별 파손 발생 제품 내역을 엑셀 파일로 정리합니다. (발생일자, 사유, 보류전환일, 자재 세부 내역 등 포함)
+   * 파손리스트를 작성하여 **SCM팀으로 송부**하고 TMO 및 선수품 해지를 요청합니다. (MTS 재고의 경우에만 보류 전환이 가능합니다)
+     * *MTO*: 고객 요청 생산 재고 (영업재고)
+     * *MTS*: 계획 생산 재고 (자재재고)
+3. **반송품명세서 취합**
+   * 반송품 명세서는 월말에 일괄 취합하여 공장 결재를 득한 후, 본사 SCM팀으로 최종 송부합니다.
+4. **파지 처리 절차 (폐기 확정 시)**
+   * **자재 투입피킹**: T-code \`zba027\` (파지 및 반제품 투입피킹)에 접속하여 저장위치, 자재코드를 입력하고 바코드와 처리 수량을 확인한 후 피킹을 확정합니다.
+   * **반제품/파지 전환**: T-code \`zco031\` (반제품/파지 전환)에서 'B/C picking 정보 upload'를 클릭하여 파지 출고 전기를 처리합니다.`;
+      sources = [
+        { num: 1, title: '파손품처리 업무매뉴얼.pptx', file_name: '파손품처리 업무매뉴얼.pptx', score: 0.95, url: '#', web_view_link: '#' }
+      ];
+    } else if (isBladeBeamScenario) {
+      matched = true;
+      fullAnswer = `CM3 블레이드 빔 개방 불량일 때 조치 방법은 다음과 같습니다.
+
+---
+
+### 1. CM3 블레이드 빔 개방 불량 원인
+* CM3 블레이드 빔 개방 불량은 칼라 밸브 코일 소손에 따라 칼라 밸브가 닫히면서 발생할 수 있습니다.
+
+---
+
+### 2. 실린더 에어 라인 관련 조치 (칼라 밸브 점검)
+* 블레이드 빔 개방 불량 발생 시, 칼라 밸브의 상태를 최우선적으로 점검하십시오.
+* 특히, 칼라 밸브 코일의 소손 여부를 육안으로 확인하고, 이상 발견 시 코일 교체를 고려해야 합니다.
+* 칼라 밸브의 정상 작동은 블레이드 빔의 움직임에 직접적인 영향을 미치므로, 이 부분의 조치가 필요합니다.`;
+      sources = [
+        { num: 1, title: '5.1.2.2_CM3 Blade Beam Open_24.11.03.pptx', file_name: '5.1.2.2_CM3 Blade Beam Open_24.11.03.pptx', score: 0.737, url: '#', web_view_link: '#' }
+      ];
+    } else if (isNipPressureScenario) {
       matched = true;
       fullAnswer = `PM3 1P Nip 압력 불균형 점검 및 조치에 대한 내용은 아래와 같습니다.
 
@@ -725,7 +1252,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
       // 0.8초간 대기 (AI 요약 스피너 활성화)
       setTimeout(() => {
         setIsLoading(false); // 로딩 스피너 비활성화
-        
+
         // 어시스턴트 메시지 버블을 처음에 빈 텍스트로 추가 (isTyping: true)
         setChatSessions(prev => ({
           ...prev,
@@ -784,6 +1311,8 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
         return '문서 어시스트';
       case 'ojtGuide':
         return 'OJT 가이드';
+      case 'myInfo':
+        return '내 정보';
       default:
         return '무림AI-ON';
     }
@@ -799,10 +1328,10 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
 
         <header className="mobile-header">
           <div className="mobile-logo-container" onClick={handleResetHome}>
-            <img 
-              src="/logo.png" 
-              alt="무림 로고" 
-              className="mobile-brand-logo" 
+            <img
+              src="/logo.png"
+              alt="무림 로고"
+              className="mobile-brand-logo"
             />
             <span className="mobile-logo-divider"></span>
             <span className="mobile-service-name">AI-ON</span>
@@ -821,7 +1350,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
           </div>
 
           <nav className="sidebar-nav">
-            <button 
+            <button
               className={`nav-item ${activeMenu === 'home' ? 'active' : ''}`}
               onClick={() => {
                 setActiveMenu('home');
@@ -831,7 +1360,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
               <Home size={18} />
               <span>🏠 홈 화면</span>
             </button>
-            <button 
+            <button
               className={`nav-item ${activeMenu === 'chat' ? 'active' : ''}`}
               onClick={() => {
                 setActiveMenu('chat');
@@ -841,7 +1370,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
               <Compass size={18} />
               <span>📂 문서 네비게이션</span>
             </button>
-            <button 
+            <button
               className={`nav-item ${activeMenu === 'docAssist' ? 'active' : ''}`}
               onClick={() => {
                 setActiveMenu('docAssist');
@@ -851,7 +1380,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
               <Sparkles size={18} />
               <span>📄 문서 어시스트</span>
             </button>
-            <button 
+            <button
               className={`nav-item ${activeMenu === 'ojtGuide' ? 'active' : ''}`}
               onClick={() => {
                 setActiveMenu('ojtGuide');
@@ -860,6 +1389,16 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
             >
               <GraduationCap size={18} />
               <span>🌱 신입사원 OJT 가이드</span>
+            </button>
+            <button
+              className={`nav-item ${activeMenu === 'myInfo' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveMenu('myInfo');
+                setIsSidebarOpen(false);
+              }}
+            >
+              <User size={18} />
+              <span>👤 내 정보</span>
             </button>
           </nav>
 
@@ -877,12 +1416,19 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
               <div className="home-simple-header">
                 <span className="home-subtitle">무림 사내 지식 플랫폼</span>
                 <h1>AI-ON</h1>
-                <p>무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
+                {isLoggedIn ? (
+                  <div className="home-greeting-container">
+                    <h2 className="home-greeting">안녕하세요, {currentUser.name}님!</h2>
+                    <p className="home-greeting-sub">무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
+                  </div>
+                ) : (
+                  <p>무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
+                )}
               </div>
 
               {/* 심플한 메뉴 버튼 목록 */}
               <div className="home-menu-list">
-                <button className="home-menu-btn chat-btn" onClick={() => setActiveMenu('chat')}>
+                <button className="home-menu-btn chat-btn" onClick={() => navigateToMenu('chat', '문서 네비게이션')}>
                   <span className="btn-icon">📂</span>
                   <div className="btn-text">
                     <h3>문서 네비게이션</h3>
@@ -891,7 +1437,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                   <span className="btn-arrow">→</span>
                 </button>
 
-                <button className="home-menu-btn assist-btn" onClick={() => setActiveMenu('docAssist')}>
+                <button className="home-menu-btn assist-btn" onClick={() => navigateToMenu('docAssist', '문서 어시스트')}>
                   <span className="btn-icon">📄</span>
                   <div className="btn-text">
                     <h3>문서 어시스트</h3>
@@ -900,7 +1446,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                   <span className="btn-arrow">→</span>
                 </button>
 
-                <button className="home-menu-btn ojt-btn" onClick={() => setActiveMenu('ojtGuide')}>
+                <button className="home-menu-btn ojt-btn" onClick={() => navigateToMenu('ojtGuide', '신입사원 OJT 가이드')}>
                   <span className="btn-icon">🌱</span>
                   <div className="btn-text">
                     <h3>신입사원 OJT 가이드</h3>
@@ -908,6 +1454,34 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                   </div>
                   <span className="btn-arrow">→</span>
                 </button>
+              </div>
+
+              {/* 최근 이용 내역 섹션 */}
+              <div className="recent-activity-section">
+                <div className="recent-activity-header">
+                  <h3>🕒 최근 이용한 문서</h3>
+                  {recentActivities.length > 0 && (
+                    <button className="clear-history-btn" onClick={() => setRecentActivities([])}>전체 삭제</button>
+                  )}
+                </div>
+                {recentActivities.length === 0 ? (
+                  <div className="no-activity">최근 이용한 내역이 없습니다.</div>
+                ) : (
+                  <div className="recent-activity-list-horizontal">
+                    {recentActivities.map(act => (
+                      <div key={act.id} className="recent-activity-card" onClick={() => handleActivityClick(act.type)}>
+                        <div className="card-top">
+                          <span className="card-doc-icon-wrapper">
+                            <FileText size={14} />
+                          </span>
+                          <span className="card-title" title={act.title}>{act.title}</span>
+                        </div>
+                        <span className="card-date">{act.date}</span>
+                        <p className="card-desc">{act.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1019,7 +1593,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                         <div className="suggestion-title">💡 이런 질문을 해보세요:</div>
                         <div className="suggestion-grid">
                           {suggestions.map((sug, idx) => (
-                            <button 
+                            <button
                               key={idx}
                               className="suggestion-chip"
                               onClick={() => handleSendMessage(sug.text)}
@@ -1065,7 +1639,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                     <div className="chat-suggestion-chips-inline">
                       <span className="chips-label">💡 추천 질문:</span>
                       {suggestions.map((sug, idx) => (
-                        <button 
+                        <button
                           key={idx}
                           className="inline-suggestion-chip"
                           disabled={isLoading}
@@ -1079,8 +1653,8 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
 
                   {/* 입력란 고정 피드 */}
                   <div className="chat-input-wrapper">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       className="chat-input"
                       placeholder={`${selectedCategory} 관련 내용 검색...`}
                       value={inputText}
@@ -1090,8 +1664,8 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                       }}
                       disabled={isLoading}
                     />
-                    <button 
-                      className="send-btn" 
+                    <button
+                      className="send-btn"
                       onClick={() => handleSendMessage()}
                       disabled={isLoading || !inputText.trim()}
                     >
@@ -1104,37 +1678,115 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
           )}
           {activeMenu === 'docAssist' && <DocAssistPanel messages={messages} />}
           {activeMenu === 'ojtGuide' && <OjtGuidePanel />}
+          {activeMenu === 'myInfo' && (
+            <div className="my-info-container">
+              {isLoggedIn ? (
+                <div className="profile-card">
+                  <div className="profile-header">
+                    <div className="profile-avatar">
+                      <User size={48} />
+                    </div>
+                    <div className="profile-main-info">
+                      <h2>{currentUser.name} {currentUser.position}</h2>
+                      <p>{currentUser.department}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="profile-details">
+                    <div className="detail-row">
+                      <span className="detail-label">사번</span>
+                      <span className="detail-value">{currentUser.employeeId}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">소속 부서</span>
+                      <span className="detail-value">{currentUser.department}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">직급</span>
+                      <span className="detail-value">{currentUser.position}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">최근 로그인</span>
+                      <span className="detail-value">{currentUser.lastLogin}</span>
+                    </div>
+                  </div>
+
+                  <button className="logout-btn" onClick={() => {
+                    setIsLoggedIn(false);
+                    setModalMessage("로그아웃 되었습니다.");
+                    setIsModalOpen(true);
+                  }}>
+                    로그아웃
+                  </button>
+                </div>
+              ) : (
+                <div className="login-card">
+                  <div className="login-header">
+                    <h2>로그인</h2>
+                    <p>사내 지식 플랫폼 AI-ON을 시작합니다.</p>
+                  </div>
+                  <div className="login-form">
+                    <div className="input-group">
+                      <label htmlFor="login-emp-id">사번</label>
+                      <input id="login-emp-id" type="text" defaultValue={currentUser.employeeId} placeholder="사번을 입력하세요" />
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor="login-password">비밀번호</label>
+                      <input id="login-password" type="password" defaultValue="••••••••" placeholder="비밀번호를 입력하세요" />
+                    </div>
+                    <button className="login-btn" onClick={() => {
+                      setIsLoggedIn(true);
+                      const now = new Date();
+                      const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+                      setCurrentUser(prev => ({ ...prev, lastLogin: timeStr }));
+                      setModalMessage("로그인 되었습니다. 반갑습니다, 전현웅 대리님!");
+                      setIsModalOpen(true);
+                    }}>
+                      로그인
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </main>
 
         {/* 모바일 화면용 고정형 하단 네비게이션 탭바 */}
         <div className="mobile-bottom-tab-bar">
-          <button 
+          <button
             className={`mobile-tab-item ${activeMenu === 'home' ? 'active' : ''}`}
             onClick={() => setActiveMenu('home')}
           >
             <Home size={18} />
             <span>홈</span>
           </button>
-          <button 
+          <button
             className={`mobile-tab-item ${activeMenu === 'chat' ? 'active' : ''}`}
             onClick={() => setActiveMenu('chat')}
           >
             <Compass size={18} />
             <span>문서 네비</span>
           </button>
-          <button 
+          <button
             className={`mobile-tab-item ${activeMenu === 'docAssist' ? 'active' : ''}`}
             onClick={() => setActiveMenu('docAssist')}
           >
             <Sparkles size={18} />
             <span>문서 어시스트</span>
           </button>
-          <button 
+          <button
             className={`mobile-tab-item ${activeMenu === 'ojtGuide' ? 'active' : ''}`}
             onClick={() => setActiveMenu('ojtGuide')}
           >
             <GraduationCap size={18} />
             <span>OJT 가이드</span>
+          </button>
+          <button
+            className={`mobile-tab-item ${activeMenu === 'myInfo' ? 'active' : ''}`}
+            onClick={() => setActiveMenu('myInfo')}
+          >
+            <User size={18} />
+            <span>내 정보</span>
           </button>
         </div>
 

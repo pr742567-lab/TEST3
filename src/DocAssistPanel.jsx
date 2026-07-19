@@ -49,7 +49,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <h2>📄 문서 어시스트</h2>
         <div className="content-subheader-container">
           <span className="slogan-badge">문서 자동 생성</span>
-          <span className="slogan-desc">AI가 도와주는 스마트 문서 작성 — 작성할 문서 유형을 선택하세요</span>
+          <span className="slogan-desc">더 스마트한 문서 작성 — 작성할 문서 유형을 선택하세요</span>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <h3>문서 작성을 시작하세요</h3>
         <p>
           작성할 문서 유형을 선택하면,<br />
-          AI가 내용을 다듬고 표준 양식에 맞춰 자동으로 문서를 생성합니다.
+          내용을 깔끔하게 다듬고 표준 양식에 맞춰 자동으로 문서를 생성합니다.
         </p>
       </div>
 
@@ -75,7 +75,7 @@ const DocAssistPanel = ({ messages = [] }) => {
           </div>
           <div className="doc-type-card-content">
             <h3>진주공장 주요 업무보고</h3>
-            <p>부서를 선택하고 업무 내용만 입력하면 AI가 다듬어 PPT를 자동 생성합니다</p>
+            <p>부서를 선택하고 업무 내용만 입력하면 내용을 정리하여 PPT를 자동 생성합니다</p>
           </div>
           <div className="doc-type-card-badge">PPT</div>
           <div className="doc-type-card-arrow">→</div>
@@ -91,7 +91,7 @@ const DocAssistPanel = ({ messages = [] }) => {
           </div>
           <div className="doc-type-card-content">
             <h3>개선 제안서</h3>
-            <p>문제점과 개선안을 입력하면 AI가 다듬어 제안서 양식에 맞는 Excel을 자동 생성합니다</p>
+            <p>문제점과 개선안을 입력하면 내용을 정리하여 제안서 양식에 맞는 Excel을 자동 생성합니다</p>
           </div>
           <div className="doc-type-card-badge">Excel</div>
           <div className="doc-type-card-arrow">→</div>
@@ -108,7 +108,7 @@ const DocAssistPanel = ({ messages = [] }) => {
           </div>
           <div className="doc-type-card-content">
             <h3>위험성 평가</h3>
-            <p>작업 프로세스와 위험 요인을 입력하면 AI가 분석하여 위험성평가표를 작성합니다</p>
+            <p>작업 프로세스와 위험 요인을 입력하면 이를 분석하여 위험성평가표를 작성합니다</p>
           </div>
           <div className="doc-type-card-badge">Excel</div>
           <div className="doc-type-card-arrow">→</div>
@@ -135,9 +135,9 @@ const DocAssistPanel = ({ messages = [] }) => {
       {/* 안내 기능 카드 */}
       <div className="doc-feature-cards">
         <div className="doc-feature-card">
-          <span className="doc-feature-card-icon">🤖</span>
+          <span className="doc-feature-card-icon">✨</span>
           <div className="doc-feature-card-body">
-            <h4>AI 문장 다듬기</h4>
+            <h4>문장 자동 다듬기</h4>
             <p>입력한 내용을 비즈니스 문서에 적합한 문체로 자동 다듬어 줍니다.</p>
           </div>
         </div>

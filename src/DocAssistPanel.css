@@ -16,9 +16,11 @@
 /* ─── 워크플로우 스테퍼 (3단계 진행 표시기) ─── */
 .doc-assist-stepper {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.8rem; /* 세로 마진 축소 */
-  padding: 0.6rem 0.8rem; /* 스테퍼 패딩 축소 */
+  padding: 0.5rem 0.6rem; /* 스테퍼 패딩 대폭 축소 */
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
@@ -28,9 +30,9 @@
 .stepper-item {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.4rem;
   cursor: pointer;
-  padding: 0.5rem 0.8rem;
+  padding: 0.3rem 0.4rem;
   border-radius: var(--border-radius-md);
   transition: all var(--transition-fast);
   flex-shrink: 0;
@@ -46,13 +48,13 @@
 
 /* 스테퍼 원형 번호 */
 .stepper-circle {
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   border: 2px solid var(--border-color);
   color: var(--text-muted);
@@ -81,9 +83,10 @@
 
 .stepper-title {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   color: var(--text-secondary);
   transition: color var(--transition-fast);
+  white-space: nowrap;
 }
 
 .stepper-item.active .stepper-title {
@@ -91,8 +94,7 @@
 }
 
 .stepper-desc {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  display: none !important; /* 공간 절약을 위해 상시 숨김 */
 }
 
 /* 스테퍼 간 연결선 */
@@ -100,8 +102,53 @@
   flex-grow: 1;
   height: 2px;
   background: var(--border-color);
-  margin: 0 0.5rem;
-  min-width: 20px;
+  margin: 0 0.4rem;
+  min-width: 10px;
+}
+
+/* 현재 활성화된 단일 단계 헤더 (Current Step Header) */
+.doc-assist-current-step {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.3s ease;
+}
+
+.current-step-number {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.current-step-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.current-step-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.current-step-desc {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
 }
 
 /* ─── 콘텐츠 영역 ─── */
@@ -453,19 +500,6 @@
 
 /* ─── 반응형 (태블릿 및 모바일) ─── */
 @media (max-width: 768px) {
-  .doc-assist-stepper {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-  }
-
-  .stepper-connector {
-    width: 2px;
-    height: 16px;
-    min-width: unset;
-    margin: 0 auto;
-  }
-
   .doc-assist-placeholder {
     min-height: 200px;
     padding: 2rem 1rem;

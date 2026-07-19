@@ -76,7 +76,7 @@ const DeptReportRefineStep = ({
       });
 
       if (!response.ok) {
-        throw new Error(`AI 다듬기 서버 통신 실패 (상태 코드: ${response.status})`);
+        throw new Error(`내용 다듬기 서버 통신 실패 (상태 코드: ${response.status})`);
       }
 
       const data = await response.json();
@@ -95,7 +95,7 @@ const DeptReportRefineStep = ({
       setIsRefined(true);
     } catch (error) {
       console.error('AI 다듬기 에러 발생:', error);
-      setRefineError(error.message || 'AI로 다듬는 과정에서 문제가 발생했습니다.');
+      setRefineError(error.message || '내용을 다듬는 과정에서 문제가 발생했습니다.');
     } finally {
       setIsRefining(false);
     }
@@ -125,8 +125,8 @@ const DeptReportRefineStep = ({
       <div className="dept-form-refinement-desc-box">
         <Sparkles size={18} className="desc-icon" style={{ color: '#0f766e' }} />
         <div>
-          <h4>AI 다듬기 단계</h4>
-          <p>입력한 내용을 토대로 AI가 비즈니스 어조로 정돈하고 깔끔한 보고 형식을 구성합니다. 내용 다듬기를 실행해 보세요.</p>
+          <h4>내용 자동 다듬기</h4>
+          <p>입력한 내용을 토대로 비즈니스 문서에 알맞은 어조로 정형화하고 깔끔한 보고 형식으로 다듬어 줍니다. 내용 다듬기를 실행해 보세요.</p>
         </div>
       </div>
 
@@ -141,7 +141,7 @@ const DeptReportRefineStep = ({
           >
             {isRefining ? (
               <>
-                <Loader size={16} className="dept-spinner" /> AI가 작성 내용을 분석하고 있습니다...
+                <Loader size={16} className="dept-spinner" /> 작성 내용을 분석하여 다듬고 있습니다...
               </>
             ) : isRefined ? (
               <>
@@ -149,7 +149,7 @@ const DeptReportRefineStep = ({
               </>
             ) : (
               <>
-                <Sparkles size={16} /> AI로 보고서 어조 다듬기
+                <Sparkles size={16} /> 내용 다듬기
               </>
             )}
           </button>

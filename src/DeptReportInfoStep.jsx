@@ -68,7 +68,7 @@ const DeptReportInfoStep = ({
               </select>
             </div>
 
-            <div className="dept-form-row">
+            <div className="dept-form-row dept-form-row-inline">
               <div className="dept-form-field dept-form-field-sm">
                 <label className="dept-form-field-label-with-icon">
                   <Calendar size={14} className="field-icon" />

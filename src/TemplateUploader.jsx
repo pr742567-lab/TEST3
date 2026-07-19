@@ -175,7 +175,7 @@ const TemplateUploader = ({ onAnalysisComplete }) => {
           <p>
             기존에 잘 만들어진 PPT 파일을 여기에 드래그하거나 클릭하여 선택하세요.
             <br />
-            AI가 스타일과 구조를 자동으로 분석합니다.
+            템플릿의 스타일과 구조를 자동으로 분석합니다.
           </p>
           <span className="upload-hint">.pptx / .ppt · 최대 50MB</span>
         </div>
@@ -188,7 +188,7 @@ const TemplateUploader = ({ onAnalysisComplete }) => {
           <p>
             {uploadState === 'uploading'
               ? `${fileName} 파일을 서버에 전송하고 있습니다.`
-              : 'AI가 슬라이드 구조, 폰트, 색상 등을 분석하고 있습니다.'}
+              : '슬라이드 구조, 폰트, 색상 등을 분석하고 있습니다.'}
           </p>
         </div>
       )}

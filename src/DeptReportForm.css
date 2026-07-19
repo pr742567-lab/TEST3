@@ -161,7 +161,14 @@
 /* ─── 행 레이아웃 ─── */
 .dept-form-row {
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.75rem;
+}
+
+/* 모바일 화면 규격 고정에 따른 상시 가로 배치 조밀 정렬 특수 클래스 */
+.dept-form-row.dept-form-row-inline {
+  flex-direction: row;
   align-items: flex-end;
 }
 
