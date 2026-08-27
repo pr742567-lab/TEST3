@@ -14,15 +14,36 @@ import './DocAssistPanel.css';
  *   1. 진주공장 주요 업무보고 (DeptReportTab)
  *   2. 개선 제안서 (ImprovementProposalTab) - 추후 구현
  */
-const DocAssistPanel = ({ messages = [] }) => {
-  // 선택된 문서 유형 (null: 선택 화면, 'weekly_report': 주요업무보고, 'improvement_proposal': 개선 제안서)
-  const [selectedDocType, setSelectedDocType] = useState(null);
+const DocAssistPanel = ({
+  messages = [],
+  selectedDocType: propDocType,
+  onSelectDocType,
+  onBack: propOnBack
+}) => {
+  // 외부 props가 없을 경우를 대비한 내부 fallback 상태
+  const [internalDocType, setInternalDocType] = useState(null);
+  const selectedDocType = propDocType !== undefined ? propDocType : internalDocType;
+
+  const handleSelectDocType = (type) => {
+    if (onSelectDocType) {
+      onSelectDocType(type);
+    } else {
+      setInternalDocType(type);
+    }
+  };
+
   // 모달 상태 관리 (준비 중 안내 목적)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
   // 문서 유형 선택 화면으로 돌아가기
-  const handleBack = () => setSelectedDocType(null);
+  const handleBack = () => {
+    if (propOnBack) {
+      propOnBack();
+    } else {
+      setInternalDocType(null);
+    }
+  };
 
   // 선택된 문서 유형에 따라 화면 전환
   if (selectedDocType === 'weekly_report') {
@@ -68,7 +89,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <div
           className="doc-type-card"
           id="doc-card-weekly-report"
-          onClick={() => setSelectedDocType('weekly_report')}
+          onClick={() => handleSelectDocType('weekly_report')}
         >
           <div className="doc-type-card-icon weekly-report">
             <FileText size={32} />
@@ -84,7 +105,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <div
           className="doc-type-card"
           id="doc-card-improvement-proposal"
-          onClick={() => setSelectedDocType('improvement_proposal')}
+          onClick={() => handleSelectDocType('improvement_proposal')}
         >
           <div className="doc-type-card-icon improvement-proposal">
             <Lightbulb size={32} />
@@ -101,7 +122,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <div
           className="doc-type-card"
           id="doc-card-risk-assessment"
-          onClick={() => setSelectedDocType('risk_assessment')}
+          onClick={() => handleSelectDocType('risk_assessment')}
         >
           <div className="doc-type-card-icon risk-assessment">
             <AlertTriangle size={32} />
@@ -118,7 +139,7 @@ const DocAssistPanel = ({ messages = [] }) => {
         <div
           className="doc-type-card"
           id="doc-card-draft-document"
-          onClick={() => setSelectedDocType('draft_document')}
+          onClick={() => handleSelectDocType('draft_document')}
         >
           <div className="doc-type-card-icon draft-document">
             <FileCheck size={32} />

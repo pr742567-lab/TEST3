@@ -11,19 +11,22 @@
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
-  --primary-gradient: linear-gradient(0deg, #0d9488 0%, #0d9488 100%); /* 단색 Teal 처리 */
+  --primary-gradient: linear-gradient(0deg, #0d9488 0%, #0d9488 100%);
+  /* 단색 Teal 처리 */
   --accent-color: #2dd4bf;
-  --accent-glow: rgba(0, 0, 0, 0); /* 네온 광채 제거 */
-  
+  --accent-glow: rgba(0, 0, 0, 0);
+  /* 네온 광채 제거 */
+
   --chat-bg-user: #1e293b;
   --chat-bg-bot: #0f172a;
   --chat-border-bot: #334155;
-  
+
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-glass: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* 글래스 섀도우 단순화 */
-  
+  --shadow-glass: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  /* 글래스 섀도우 단순화 */
+
   --border-radius-sm: 6px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
@@ -33,22 +36,28 @@
 
 [data-theme='light'] {
   /* 라이트 미니멀 테마 토큰 */
-  --bg-primary: #f4f6f9; /* 은은한 그레이-블루 톤으로 배경 대비 강화 */
-  --bg-surface: #ffffff; /* 순백색 카드를 얹기 위한 표면 색상 */
+  --bg-primary: #f4f6f9;
+  /* 은은한 그레이-블루 톤으로 배경 대비 강화 */
+  --bg-surface: #ffffff;
+  /* 순백색 카드를 얹기 위한 표면 색상 */
   --bg-surface-heavy: #edf0f5;
-  --border-color: #eef2f6; /* 더욱 얇고 은은한 경계선 */
+  --border-color: #eef2f6;
+  /* 더욱 얇고 은은한 경계선 */
   --border-highlight: #cbd5e1;
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
-  --primary-gradient: linear-gradient(0deg, #0f766e 0%, #0f766e 100%); /* 단색 Teal 처리 */
+  --primary-gradient: linear-gradient(0deg, #0f766e 0%, #0f766e 100%);
+  /* 단색 Teal 처리 */
   --accent-color: #0f766e;
-  --accent-glow: rgba(0, 0, 0, 0); /* 네온 광채 제거 */
-  
-  --chat-bg-user: #e6f4f2; /* 사용자 말풍선을 브랜드 Teal 톤에 맞춘 연한 민트/Teal 톤으로 변경 */
+  --accent-glow: rgba(0, 0, 0, 0);
+  /* 네온 광채 제거 */
+
+  --chat-bg-user: #e6f4f2;
+  /* 사용자 말풍선을 브랜드 Teal 톤에 맞춘 연한 민트/Teal 톤으로 변경 */
   --chat-bg-bot: #ffffff;
   --chat-border-bot: #eef2f6;
-  
+
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.03);
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
@@ -59,24 +68,33 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  scrollbar-width: none; /* 파이어폭스(Firefox) 스크롤바 숨김 */
-  -ms-overflow-style: none; /* 인터넷 익스플로러 및 구형 엣지 스크롤바 숨김 */
+  scrollbar-width: none;
+  /* 파이어폭스(Firefox) 스크롤바 숨김 */
+  -ms-overflow-style: none;
+  /* 인터넷 익스플로러 및 구형 엣지 스크롤바 숨김 */
 }
 
 *::-webkit-scrollbar {
-  display: none; /* 크롬, 사파리 등 웹킷 기반 브라우저 스크롤바 숨김 */
+  display: none;
+  /* 크롬, 사파리 등 웹킷 기반 브라우저 스크롤바 숨김 */
 }
 
-input, select, textarea, button {
-  font-family: inherit; /* 부모 폰트 설정 상속 */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  /* 부모 폰트 설정 상속 */
 }
 
 body {
   font-family: 'Outfit', 'Noto Sans KR', sans-serif;
-  -webkit-font-smoothing: antialiased; /* 글꼴 매끄럽게 최적화 */
+  -webkit-font-smoothing: antialiased;
+  /* 글꼴 매끄럽게 최적화 */
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background-color: #0b0f19; /* 바깥 배경은 아주 깊고 차분한 다크 블루 */
+  background-color: #0b0f19;
+  /* 바깥 배경은 아주 깊고 차분한 다크 블루 */
   color: var(--text-primary);
   transition: background-color var(--transition-normal), color var(--transition-normal);
   min-height: 100vh;
@@ -99,14 +117,18 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 430px; /* 아이폰 Pro Max 가로폭 기준 */
-  height: 100vh; /* 높이를 100vh로 고정하여 뷰포트 밖으로 삐져나가지 않도록 제어 */
-  background-color: var(--bg-primary); /* 실제 모바일 안쪽 배경 */
+  max-width: 430px;
+  /* 아이폰 Pro Max 가로폭 기준 */
+  height: 100vh;
+  /* 높이를 100vh로 고정하여 뷰포트 밖으로 삐져나가지 않도록 제어 */
+  background-color: var(--bg-primary);
+  /* 실제 모바일 안쪽 배경 */
   border-left: 1px solid var(--border-color);
   border-right: 1px solid var(--border-color);
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
   position: relative;
-  overflow: hidden; /* 전체 컨테이너 수준에서의 스크롤 방지 */
+  overflow: hidden;
+  /* 전체 컨테이너 수준에서의 스크롤 방지 */
 }
 
 /* 좌측 사이드바 (Sidebar) */
@@ -234,15 +256,21 @@ body {
 /* 우측 메인 콘텐트 영역 (Content Area - 모바일 규격 고정) */
 .content-area {
   flex-grow: 1;
-  flex-shrink: 1; /* 가용 높이를 초과하지 않도록 축소 허용 */
-  min-height: 0; /* 내부 스크롤뷰 안정을 위한 flex 핵심 공식 */
-  height: 0; /* 명시적으로 높이를 0으로 설정하여 flex 자식이 높이를 100% 인식하도록 제어 */
-  padding: 1rem 1rem 70px 1rem; /* 탭바 높이(60px) + 안전마진 고려 하단 패딩 추가 */
+  flex-shrink: 1;
+  /* 가용 높이를 초과하지 않도록 축소 허용 */
+  min-height: 0;
+  /* 내부 스크롤뷰 안정을 위한 flex 핵심 공식 */
+  height: 0;
+  /* 명시적으로 높이를 0으로 설정하여 flex 자식이 높이를 100% 인식하도록 제어 */
+  padding: 1rem 1rem 70px 1rem;
+  /* 탭바 높이(60px) + 안전마진 고려 하단 패딩 추가 */
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* 부모 전체 수준에서의 스크롤 방지 */
+  overflow: hidden;
+  /* 부모 전체 수준에서의 스크롤 방지 */
   position: relative;
 }
+
 /* 문서 네비게이션용 OJT 패밀리룩 웰컴 카드 스타일 */
 .nav-welcome-screen {
   animation: fadeIn 0.35s ease;
@@ -251,21 +279,28 @@ body {
   gap: 0.6rem;
   margin-bottom: 0.6rem;
   flex-grow: 1;
-  overflow-y: auto; /* 극단적으로 낮은 해상도 대응을 위한 스크롤 추가 */
+  overflow-y: auto;
+  /* 극단적으로 낮은 해상도 대응을 위한 스크롤 추가 */
   padding-right: 4px;
 }
 
 .nav-welcome-card {
-  background: #ffffff; /* 순백색 카드 효과 극대화 */
-  border: 1px solid #eef2f6; /* 얇고 밝은 테두리 */
-  border-radius: 16px; /* 부드러운 라운드 적용 */
-  padding: 0.8rem 1rem; /* 여백 축소로 한 화면 배치 확보 */
+  background: #ffffff;
+  /* 순백색 카드 효과 극대화 */
+  border: 1px solid #eef2f6;
+  /* 얇고 밝은 테두리 */
+  border-radius: 16px;
+  /* 부드러운 라운드 적용 */
+  padding: 0.8rem 1rem;
+  /* 여백 축소로 한 화면 배치 확보 */
   text-align: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02); /* 가벼운 잔상 그림자 */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  /* 가벼운 잔상 그림자 */
 }
 
 .nav-welcome-icon {
-  font-size: 1.4rem; /* 크기 축소 */
+  font-size: 1.4rem;
+  /* 크기 축소 */
   margin-bottom: 0.2rem;
   display: block;
 }
@@ -279,8 +314,10 @@ body {
 
 .nav-welcome-card p {
   color: var(--text-secondary);
-  font-size: 0.76rem; /* 폰트 축소 */
-  line-height: 1.4; /* 라인 높이 축소 */
+  font-size: 0.76rem;
+  /* 폰트 축소 */
+  line-height: 1.4;
+  /* 라인 높이 축소 */
 }
 
 /* 네비게이션 기능 카드 */
@@ -335,15 +372,18 @@ body {
 .chat-interface {
   display: flex;
   flex-direction: column;
-  height: 100%; /* 가용 높이를 100% 꽉 채우도록 설정 */
-  overflow: hidden; /* 입력창 고정을 위해 바깥 영역 스크롤 방지 */
+  height: 100%;
+  /* 가용 높이를 100% 꽉 채우도록 설정 */
+  overflow: hidden;
+  /* 입력창 고정을 위해 바깥 영역 스크롤 방지 */
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
 }
 
 .content-header {
-  display: none !important; /* 상단 헤더가 있으므로 불필요하여 전체 화면에서 숨김 처리 */
+  display: none !important;
+  /* 상단 헤더가 있으므로 불필요하여 전체 화면에서 숨김 처리 */
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 1.2rem;
@@ -407,8 +447,10 @@ body {
   gap: 1.5rem;
   margin-bottom: 0.8rem;
   flex-grow: 1;
-  overflow-y: auto; /* 메시지 영역 내부 독립 스크롤 활성화 */
-  padding-right: 4px; /* 스크롤바 영역으로 인한 우측 답답함 해결 */
+  overflow-y: auto;
+  /* 메시지 영역 내부 독립 스크롤 활성화 */
+  padding-right: 4px;
+  /* 스크롤바 영역으로 인한 우측 답답함 해결 */
 }
 
 .chat-message {
@@ -457,7 +499,8 @@ body {
 .chat-bubble {
   max-width: 85%;
   padding: 1rem 1.2rem;
-  border-radius: 16px; /* 더 부드럽고 친근한 라운드 */
+  border-radius: 16px;
+  /* 더 부드럽고 친근한 라운드 */
   line-height: 1.6;
   font-size: 0.92rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.01);
@@ -466,17 +509,22 @@ body {
 
 .chat-message.user .chat-bubble {
   background: var(--chat-bg-user);
-  border: 1px solid #d2eae6; /* 유저 말풍선 테두리를 한층 조화로운 연한 민트빛으로 변경 */
-  color: #0d5c56; /* 가독성 좋은 짙은 Teal 텍스트 */
+  border: 1px solid #d2eae6;
+  /* 유저 말풍선 테두리를 한층 조화로운 연한 민트빛으로 변경 */
+  color: #0d5c56;
+  /* 가독성 좋은 짙은 Teal 텍스트 */
   border-top-right-radius: 4px;
 }
 
 .chat-message.assistant .chat-bubble {
-  background: #ffffff; /* 강제 화이트 카드화 */
-  border: 1px solid #eef2f6; /* 은은한 선 처리 */
+  background: #ffffff;
+  /* 강제 화이트 카드화 */
+  border: 1px solid #eef2f6;
+  /* 은은한 선 처리 */
   color: var(--text-primary);
   border-top-left-radius: 4px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02); /* 가벼운 하단 그림자 */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  /* 가벼운 하단 그림자 */
 }
 
 /* 추천 검색어 칩 (네온 호버 이펙트 적용) */
@@ -505,14 +553,18 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  padding: 0.4rem 0.6rem; /* 패딩 축소 */
+  padding: 0.4rem 0.6rem;
+  /* 패딩 축소 */
   border-radius: var(--border-radius-md);
-  font-size: 0.75rem; /* 글자 크기 축소 */
+  font-size: 0.75rem;
+  /* 글자 크기 축소 */
   text-align: left;
   cursor: pointer;
   transition: all var(--transition-fast);
-  white-space: normal; /* 긴 질문도 깔끔하게 줄바꿈되게 허용 */
-  word-break: keep-all; /* 단어가 도중에 잘리지 않게 조정 */
+  white-space: normal;
+  /* 긴 질문도 깔끔하게 줄바꿈되게 허용 */
+  word-break: keep-all;
+  /* 단어가 도중에 잘리지 않게 조정 */
   box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
@@ -534,13 +586,15 @@ body {
   gap: 0.5rem;
   overflow-x: auto;
   white-space: nowrap;
-  scrollbar-width: none; /* Firefox용 스크롤바 숨김 */
+  scrollbar-width: none;
+  /* Firefox용 스크롤바 숨김 */
   -webkit-overflow-scrolling: touch;
   margin-bottom: 0.4rem;
 }
 
 .chat-suggestion-chips-inline::-webkit-scrollbar {
-  display: none; /* Chrome/Safari/Webkit용 스크롤바 숨김 */
+  display: none;
+  /* Chrome/Safari/Webkit용 스크롤바 숨김 */
 }
 
 .chat-suggestion-chips-inline .chips-label {
@@ -587,7 +641,8 @@ body {
   display: flex;
   gap: 0.4rem;
   border: 1px solid var(--border-highlight);
-  border-radius: 50px; /* 라운드 캡슐형으로 변경하여 더 이쁘고 모바일스럽게 변경 */
+  border-radius: 50px;
+  /* 라운드 캡슐형으로 변경하여 더 이쁘고 모바일스럽게 변경 */
   box-shadow: var(--shadow-sm);
   z-index: 10;
   transition: all var(--transition-fast);
@@ -604,7 +659,8 @@ body {
   border: none;
   color: var(--text-primary);
   padding: 0.3rem 0.6rem;
-  font-size: 0.85rem; /* 모바일 폭에 맞게 소폭 축소 */
+  font-size: 0.85rem;
+  /* 모바일 폭에 맞게 소폭 축소 */
   outline: none;
 }
 
@@ -671,17 +727,38 @@ body {
   box-shadow: 0 0 10px var(--accent-glow);
 }
 
-.dot:nth-child(1) { animation-delay: -0.32s; }
-.dot:nth-child(2) { animation-delay: -0.16s; }
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
 
 @keyframes pulseGlow {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
-  40% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 15px var(--accent-color); }
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 0 15px var(--accent-color);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* 설정 탭 상세 */
@@ -704,7 +781,7 @@ body {
 }
 
 .setting-value {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   padding: 1rem;
   border-radius: var(--border-radius-md);
   border: 1px solid var(--border-color);
@@ -715,7 +792,7 @@ body {
 }
 
 [data-theme='light'] .setting-value {
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .action-btn {
@@ -769,7 +846,7 @@ body {
   font-size: 0.85em;
   font-weight: 700;
   color: #fff !important;
-  vertical-align: super; 
+  vertical-align: super;
   margin-left: 0.2rem;
   margin-right: 0.2rem;
   text-decoration: none;
@@ -811,7 +888,7 @@ body {
   border-radius: 6px;
   font-family: 'Consolas', monospace;
   font-size: 0.9em;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='light'] .chat-bubble code {
@@ -885,13 +962,20 @@ body {
 
 .accordion-content {
   padding: 0.5rem 1.2rem 1.2rem 1.2rem;
-  border-top: 1px solid rgba(255,255,255,0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
   animation: slideDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1);
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 모바일 전용 가상 상태 표시줄 */
@@ -900,7 +984,8 @@ body {
   justify-content: center;
   align-items: center;
   height: 26px;
-  background-color: #0b0f19; /* 상태 바는 차분하고 얇은 블랙/다크 블루 톤 */
+  background-color: #0b0f19;
+  /* 상태 바는 차분하고 얇은 블랙/다크 블루 톤 */
   color: rgba(255, 255, 255, 0.9);
   padding: 0 16px;
   font-size: 0.72rem;
@@ -919,24 +1004,68 @@ body {
   opacity: 0.95;
 }
 
-/* 모바일 전용 헤더 */
+/* 모바일 전용 헤더 (3열 그리드: 좌측 뒤로가기 | 중앙 로고 | 우측 여백) */
 .mobile-header {
-  display: flex; /* 데스크톱 뷰포트에서도 모바일 레이아웃 프레임을 강제하므로 항상 켬 */
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
   align-items: center;
-  justify-content: center; /* 로고를 정중앙에 배치하여 대칭성 및 깔끔함 극대화 */
-  padding: 0 1rem;
-  background: var(--accent-color); /* 기존 Teal 메인 브랜드 컬러 단색 헤더 적용 */
+  padding: 0 0.75rem;
+  background: var(--accent-color);
   position: sticky;
   top: 0;
   z-index: 90;
-  height: 56px; /* 크기를 약간 키워 시각적 여유 확보 */
+  height: 56px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
-  border-bottom: none;
+  width: 100%;
+}
+
+.mobile-header-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 48px;
+  width: 48px;
+  height: 100%;
+}
+
+.mobile-header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 48px;
+  width: 48px;
+  height: 100%;
+}
+
+.mobile-header-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.mobile-header-back-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: scale(1.05);
+}
+
+.mobile-header-back-btn:active {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0.95);
 }
 
 .mobile-menu-toggle {
-  display: none !important; /* 사이드바 제거에 따라 메뉴 버튼 완전히 숨김 */
+  display: none !important;
+  /* 사이드바 제거에 따라 메뉴 버튼 완전히 숨김 */
 }
 
 /* 모바일용 사이드바 오버레이 */
@@ -957,11 +1086,7 @@ body {
   .app-container {
     flex-direction: column;
   }
-  
-  .mobile-header {
-    display: flex;
-  }
-  
+
   .sidebar {
     position: fixed;
     top: 0;
@@ -971,15 +1096,16 @@ body {
     box-shadow: var(--shadow-lg);
     z-index: 100;
   }
-  
+
   .sidebar.open {
     transform: translateX(0);
   }
 
   .content-header {
-    display: none !important; /* 모바일 전용 헤더 및 하단 탭바와 겹쳐서 불필요하므로 숨김 처리 */
+    display: none !important;
+    /* 모바일 전용 헤더 및 하단 탭바와 겹쳐서 불필요하므로 숨김 처리 */
   }
-  
+
   .content-header h2 {
     font-size: 1.5rem;
   }
@@ -990,51 +1116,102 @@ body {
   .chat-bubble {
     max-width: 90%;
   }
-  
+
   .suggestion-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* 모바일 뒤로가기 종료 알림 토스트 메시지 */
+.mobile-exit-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  pointer-events: none;
+  animation: toastFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+@keyframes toastFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 }
 
 .mobile-logo-container {
   display: flex;
   align-items: center;
-  gap: 12px; /* 간격을 넓혀 더욱 여유 있게 배치 */
+  justify-content: center;
+  gap: 12px;
   cursor: pointer;
   transition: transform var(--transition-fast);
+  margin: 0 auto;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .mobile-logo-container:hover {
-  transform: scale(1.03); /* 스케일 업 애니메이션 체감 강화 */
+  transform: scale(1.03);
 }
 
 .mobile-brand-logo {
-  max-height: 24px; /* 기존 18px -> 24px로 대폭 키워 시인성 확보 */
+  max-height: 24px;
+  /* 기존 18px -> 24px로 대폭 키워 시인성 확보 */
   width: auto;
   display: block;
-  filter: brightness(0) invert(1); /* 단색 헤더 위에서 로고가 흰색으로 돋보이도록 반전 필터 처리 */
+  filter: brightness(0) invert(1);
+  /* 단색 헤더 위에서 로고가 흰색으로 돋보이도록 반전 필터 처리 */
+  flex-shrink: 0;
 }
 
 .mobile-logo-divider {
   width: 1.5px;
-  height: 18px; /* 높이도 로고 크기에 맞추어 확대 */
+  height: 18px;
+  /* 높이도 로고 크기에 맞추어 확대 */
   background-color: rgba(255, 255, 255, 0.4);
   margin: 0 4px;
+  flex-shrink: 0;
 }
 
 .mobile-service-name {
   color: #ffffff;
-  font-size: 1.25rem; /* 기존 0.95rem -> 1.25rem으로 확대 */
-  font-weight: 850; /* 볼드함 강화 */
+  font-size: 1.25rem;
+  /* 기존 0.95rem -> 1.25rem으로 확대 */
+  font-weight: 850;
+  /* 볼드함 강화 */
   letter-spacing: 0.06rem;
   line-height: 1;
   text-transform: uppercase;
   background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
   -webkit-background-clip: text;
-  background-clip: text; /* 표준 속성 추가 */
+  background-clip: text;
+  /* 표준 속성 추가 */
   -webkit-text-fill-color: transparent;
   font-family: 'Montserrat', 'Inter', -apple-system, sans-serif;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 미세한 그림자로 고급스러움 부여 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 미세한 그림자로 고급스러움 부여 */
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 /* 카테고리 선택 탭바 스타일 - 모바일 화면 맞춤 4열 균등 그리드 적용 */
@@ -1047,10 +1224,13 @@ body {
 }
 
 .category-tab {
-  background: #ffffff; /* 순백색 배경 적용하여 회색 본문과 대비 */
-  border: 1px solid #eef2f6; /* 은은하고 얇은 경계선 */
+  background: #ffffff;
+  /* 순백색 배경 적용하여 회색 본문과 대비 */
+  border: 1px solid #eef2f6;
+  /* 은은하고 얇은 경계선 */
   color: var(--text-secondary);
-  padding: 0.55rem 0.2rem; /* 세로 여백 미세 조율 */
+  padding: 0.55rem 0.2rem;
+  /* 세로 여백 미세 조율 */
   border-radius: 50px;
   font-size: 0.76rem;
   font-weight: 600;
@@ -1069,9 +1249,11 @@ body {
 
 .category-tab.active {
   color: #ffffff;
-  background: var(--accent-color); /* 기존 브랜드 컬러(Teal) */
+  background: var(--accent-color);
+  /* 기존 브랜드 컬러(Teal) */
   border-color: transparent;
-  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.12); /* 브랜드 섀도우로 세련됨 배가 */
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.12);
+  /* 브랜드 섀도우로 세련됨 배가 */
 }
 
 /* 웍스AI 버튼용 커스텀 스타일 (웍스AI 테마 적용) */
@@ -1083,7 +1265,8 @@ body {
   padding: 0.9rem 1.2rem;
   border-radius: var(--border-radius-md);
   border: 1px solid var(--accent-color);
-  background: rgba(13, 148, 136, 0.08); /* 반투명 Teal 계열 배경 */
+  background: rgba(13, 148, 136, 0.08);
+  /* 반투명 Teal 계열 배경 */
   color: var(--accent-color);
   font-weight: 600;
   font-size: 0.95rem;
@@ -1117,8 +1300,15 @@ body {
 }
 
 @keyframes cursorBlink {
-  from, to { background-color: transparent }
-  50% { background-color: var(--accent-color) }
+
+  from,
+  to {
+    background-color: transparent
+  }
+
+  50% {
+    background-color: var(--accent-color)
+  }
 }
 
 /* 모바일 전용 하단 탭바 스타일 - 가로 중앙정렬 고정 프레임 맞춤 */
@@ -1126,17 +1316,23 @@ body {
   position: absolute;
   bottom: 0;
   left: 0;
-  display: flex; /* 항시 활성화 */
+  display: flex;
+  /* 항시 활성화 */
   width: 100%;
-  height: 60px; /* 콤팩트하게 최적화 */
-  background: #ffffff; /* 순백색 처리 */
-  border-top: 1px solid #eef2f6; /* 연하고 얇은 경계선 */
+  height: 60px;
+  /* 콤팩트하게 최적화 */
+  background: #ffffff;
+  /* 순백색 처리 */
+  border-top: 1px solid #eef2f6;
+  /* 연하고 얇은 경계선 */
   z-index: 200;
   justify-content: space-around;
   align-items: center;
   padding: 0 0.8rem;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.03); /* 아주 은은한 그림자 */
-  flex-shrink: 0; /* flex 레이아웃 내에서 하단 탭바 크기 축소 방지 */
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.03);
+  /* 아주 은은한 그림자 */
+  flex-shrink: 0;
+  /* flex 레이아웃 내에서 하단 탭바 크기 축소 방지 */
 }
 
 .mobile-tab-item {
@@ -1146,19 +1342,22 @@ body {
   justify-content: center;
   background: transparent;
   border: none;
-  color: var(--text-muted); /* 비활성 탭은 덜 튀는 회색으로 설정 */
+  color: var(--text-muted);
+  /* 비활성 탭은 덜 튀는 회색으로 설정 */
   gap: 0.25rem;
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
-  flex: 1; /* 80px에서 변경하여 5개 탭 등분할 반응형 지원 */
+  flex: 1;
+  /* 80px에서 변경하여 5개 탭 등분할 반응형 지원 */
   height: 100%;
   transition: all var(--transition-fast);
 }
 
 .mobile-tab-item svg {
   transition: transform var(--transition-fast);
-  color: var(--text-muted); /* 비활성 아이콘 색상도 통일 */
+  color: var(--text-muted);
+  /* 비활성 아이콘 색상도 통일 */
 }
 
 .mobile-tab-item:hover {
@@ -1166,17 +1365,20 @@ body {
 }
 
 .mobile-tab-item.active {
-  color: var(--accent-color); /* 활성 탭은 브랜드 컬러(Teal) */
+  color: var(--accent-color);
+  /* 활성 탭은 브랜드 컬러(Teal) */
 }
 
 .mobile-tab-item.active svg {
   transform: translateY(-2px);
-  color: var(--accent-color); /* 활성 아이콘 색상 */
+  color: var(--accent-color);
+  /* 활성 아이콘 색상 */
 }
 
 /* 글로벌 커스텀 안내 모달 스타일 (Glassmorphism 적용) */
 .custom-modal-overlay {
-  position: absolute; /* 절대 위치(Absolute positioning)로 변경하여 부모(.app-container) 기준으로 정렬 */
+  position: absolute;
+  /* 절대 위치(Absolute positioning)로 변경하여 부모(.app-container) 기준으로 정렬 */
   top: 0;
   left: 0;
   width: 100%;
@@ -1203,8 +1405,15 @@ body {
 }
 
 @keyframes modalScaleUp {
-  from { transform: scale(0.9) translateY(10px); opacity: 0; }
-  to { transform: scale(1) translateY(0); opacity: 1; }
+  from {
+    transform: scale(0.9) translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 .custom-modal-header {
@@ -1283,16 +1492,21 @@ body {
 .home-dashboard {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem; /* 수직 간격 확대 */
-  padding: 1rem 0.75rem; /* 여백 확대 */
+  gap: 1.2rem;
+  /* 수직 간격 확대 */
+  padding: 1rem 0.75rem;
+  /* 여백 확대 */
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
   box-sizing: border-box;
   animation: fadeIn 0.4s ease-out;
-  height: auto; /* 높이 고정 해제 */
-  min-height: 100%; /* 최소 높이 설정 */
-  overflow-y: auto; /* 세로 스크롤 허용 */
+  height: auto;
+  /* 높이 고정 해제 */
+  min-height: 100%;
+  /* 최소 높이 설정 */
+  overflow-y: auto;
+  /* 세로 스크롤 허용 */
 }
 
 /* 홈 대시보드 스크롤바 커스텀 */
@@ -1314,17 +1528,26 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .home-simple-header {
   text-align: center;
-  margin-bottom: 1rem; /* 수직 여백 확보 */
+  margin-bottom: 1rem;
+  /* 수직 여백 확보 */
 }
 
 .home-subtitle {
-  font-size: 0.8rem; /* 자막 폰트 크기 확대 */
+  font-size: 0.8rem;
+  /* 자막 폰트 크기 확대 */
   font-weight: 700;
   color: var(--accent-color);
   letter-spacing: 0.06rem;
@@ -1332,23 +1555,27 @@ body {
 }
 
 .home-simple-header h1 {
-  font-size: 1.8rem; /* 글자 크기 확대 */
+  font-size: 1.8rem;
+  /* 글자 크기 확대 */
   font-weight: 900;
-  margin: 0.4rem 0; /* 마진 확대 */
+  margin: 0.4rem 0;
+  /* 마진 확대 */
   color: var(--text-primary);
   letter-spacing: -0.02rem;
 }
 
 .home-simple-header p,
 .home-greeting-sub {
-  font-size: 0.85rem; /* 본문 폰트 크기 확대 */
+  font-size: 0.85rem;
+  /* 본문 폰트 크기 확대 */
   color: var(--text-secondary);
   margin: 0;
   opacity: 0.8;
 }
 
 .home-greeting {
-  font-size: 1.2rem; /* 인사말 폰트 크기 확대 */
+  font-size: 1.2rem;
+  /* 인사말 폰트 크기 확대 */
   font-weight: 700;
   margin-bottom: 0.25rem;
 }
@@ -1357,7 +1584,8 @@ body {
 .home-menu-list {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem; /* 수직 간격 확대 */
+  gap: 0.65rem;
+  /* 수직 간격 확대 */
   width: 100%;
 }
 
@@ -1365,7 +1593,8 @@ body {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0.75rem 1rem; /* 패딩 확대 */
+  padding: 0.75rem 1rem;
+  /* 패딩 확대 */
   background: #ffffff;
   border: 1px solid #eef2f6;
   border-radius: 12px;
@@ -1382,35 +1611,50 @@ body {
 }
 
 .btn-icon {
-  font-size: 1.25rem; /* 아이콘 폰트 크기 확대 */
-  margin-right: 1rem; /* 마진 확대 */
+  font-size: 1.25rem;
+  /* 아이콘 폰트 크기 확대 */
+  margin-right: 1rem;
+  /* 마진 확대 */
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px; /* 크기 확대 */
-  height: 36px; /* 크기 확대 */
+  width: 36px;
+  /* 크기 확대 */
+  height: 36px;
+  /* 크기 확대 */
   border-radius: 8px;
   background-color: #f8fafc;
 }
 
 /* 각 버튼의 아이콘 배경색 커스텀 */
-.chat-btn .btn-icon { background-color: rgba(13, 148, 136, 0.06); }
-.assist-btn .btn-icon { background-color: rgba(59, 130, 246, 0.06); }
-.ojt-btn .btn-icon { background-color: rgba(249, 115, 22, 0.06); }
+.chat-btn .btn-icon {
+  background-color: rgba(13, 148, 136, 0.06);
+}
+
+.assist-btn .btn-icon {
+  background-color: rgba(59, 130, 246, 0.06);
+}
+
+.ojt-btn .btn-icon {
+  background-color: rgba(249, 115, 22, 0.06);
+}
 
 .btn-text {
   flex-grow: 1;
 }
 
 .btn-text h3 {
-  font-size: 0.95rem; /* 폰트 크기 확대 */
+  font-size: 0.95rem;
+  /* 폰트 크기 확대 */
   font-weight: 700;
-  margin: 0 0 0.25rem 0; /* 마진 확대 */
+  margin: 0 0 0.25rem 0;
+  /* 마진 확대 */
   color: var(--text-primary);
 }
 
 .btn-text p {
-  font-size: 0.78rem; /* 폰트 크기 확대 */
+  font-size: 0.78rem;
+  /* 폰트 크기 확대 */
   margin: 0;
   color: var(--text-secondary);
   opacity: 0.85;
@@ -1628,11 +1872,13 @@ body {
 
 /* ─── 최근 이용 내역 섹션 스타일 (가로 카드 레이아웃) ─── */
 .recent-activity-section {
-  margin-top: 1.2rem; /* 마진 확대 */
+  margin-top: 1.2rem;
+  /* 마진 확대 */
   background: var(--bg-surface);
   border: 1px solid #eef2f6;
   border-radius: var(--border-radius-lg);
-  padding: 0.75rem 0.85rem; /* 패딩 확대 */
+  padding: 0.75rem 0.85rem;
+  /* 패딩 확대 */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
   text-align: left;
 }
@@ -1641,11 +1887,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.65rem; /* 마진 확대 */
+  margin-bottom: 0.65rem;
+  /* 마진 확대 */
 }
 
 .recent-activity-header h3 {
-  font-size: 0.95rem; /* 폰트 크기 확대 */
+  font-size: 0.95rem;
+  /* 폰트 크기 확대 */
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
@@ -1655,7 +1903,8 @@ body {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 0.75rem; /* 폰트 크기 확대 */
+  font-size: 0.75rem;
+  /* 폰트 크기 확대 */
   cursor: pointer;
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
@@ -1677,7 +1926,8 @@ body {
 .recent-activity-list-horizontal {
   display: flex;
   flex-direction: row;
-  gap: 0.65rem; /* 간격 확대 */
+  gap: 0.65rem;
+  /* 간격 확대 */
   overflow-x: auto;
   padding: 0.1rem 0;
   width: 100%;
@@ -1698,12 +1948,15 @@ body {
 }
 
 .recent-activity-card {
-  flex: 1 1 0px; /* 고정 크기 110px을 해제하고 남은 가로 공간을 3등분으로 완벽 균등 분할 */
-  min-width: 0; /* 콘텐츠가 넘쳐서 카드가 강제로 늘어나는 것을 방지 */
+  flex: 1 1 0px;
+  /* 고정 크기 110px을 해제하고 남은 가로 공간을 3등분으로 완벽 균등 분할 */
+  min-width: 0;
+  /* 콘텐츠가 넘쳐서 카드가 강제로 늘어나는 것을 방지 */
   background: #ffffff;
   border: 1px solid #eef2f6;
   border-radius: 10px;
-  padding: 0.65rem 0.75rem; /* 패딩 확대 */
+  padding: 0.65rem 0.75rem;
+  /* 패딩 확대 */
   cursor: pointer;
   transition: all var(--transition-fast);
   display: flex;
@@ -1720,8 +1973,10 @@ body {
 .card-top {
   display: flex;
   align-items: center;
-  gap: 0.35rem; /* 갭 확대 */
-  margin-bottom: 0.25rem; /* 마진 확대 */
+  gap: 0.35rem;
+  /* 갭 확대 */
+  margin-bottom: 0.25rem;
+  /* 마진 확대 */
 }
 
 .card-doc-icon-wrapper {
@@ -1730,12 +1985,14 @@ body {
   align-items: center;
   justify-content: center;
   background: #f5f3ff;
-  padding: 3px; /* 패딩 확대 */
+  padding: 3px;
+  /* 패딩 확대 */
   border-radius: 4px;
 }
 
 .card-title {
-  font-size: 0.78rem; /* 글자 크기 확대 */
+  font-size: 0.78rem;
+  /* 글자 크기 확대 */
   font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
@@ -1745,21 +2002,27 @@ body {
 }
 
 .card-date {
-  font-size: 0.65rem; /* 글자 크기 확대 */
+  font-size: 0.65rem;
+  /* 글자 크기 확대 */
   color: var(--text-muted);
-  margin-bottom: 0.25rem; /* 마진 확대 */
+  margin-bottom: 0.25rem;
+  /* 마진 확대 */
   display: block;
 }
 
 .card-desc {
-  font-size: 0.7rem; /* 글자 크기 확대 */
+  font-size: 0.7rem;
+  /* 글자 크기 확대 */
   color: var(--text-secondary);
-  line-height: 1.35; /* 줄높이 확대 */
+  line-height: 1.35;
+  /* 줄높이 확대 */
   margin: 0;
   opacity: 0.85;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* 기존 1줄에서 2줄로 확대하여 가독성 개선 */
-  line-clamp: 2; /* 표준 호환성 속성 추가로 빌드 경고 수정 */
+  -webkit-line-clamp: 2;
+  /* 기존 1줄에서 2줄로 확대하여 가독성 개선 */
+  line-clamp: 2;
+  /* 표준 호환성 속성 추가로 빌드 경고 수정 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

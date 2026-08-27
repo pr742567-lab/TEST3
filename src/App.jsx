@@ -8,6 +8,7 @@ import {
   RefreshCw,
   HelpCircle,
   ChevronDown,
+  ChevronLeft,
   Menu,
   X,
   Home,
@@ -23,6 +24,7 @@ import { STATIC_SUGGESTIONS } from './data/staticSuggestions';
 import { processCitations, renderMarkdown, parseToAccordion } from './utils/chatUtils';
 import { API_BASE_URL } from './utils/api';
 import WorksAIButton from './WorksAIButton';
+import LoginPage from './LoginPage';
 
 
 // 아코디언 컴포넌트 제거 -> 일반 마크다운 및 타이핑 애니메이션 적용 컴포넌트로 변경
@@ -93,15 +95,41 @@ const AccordionMessage = React.memo(({ content, sources = [], isTyping = false }
 function App() {
   // 활성화된 메뉴 관리 (초기 화면을 홈으로 설정)
   const [activeMenu, setActiveMenu] = useState('home');
+  // 선택된 카테고리 탭 상태 변수 (디폴트: null - 카드 형태의 선택기 노출)
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  // 문서 어시스트 세부 서식 상태
+  const [docAssistType, setDocAssistType] = useState(null);
+  // OJT 가이드 세부 스텝 상태
+  const [ojtState, setOjtState] = useState({
+    step: 0,
+    dept: '',
+    part: '',
+    itemIdx: null
+  });
 
-  // 로그인 상태 및 사용자 정보 (시연용)
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [currentUser, setCurrentUser] = useState({
-    name: '전현웅',
-    department: '진주 스마트팩토리파트',
-    position: '대리',
-    employeeId: '20180090',
-    lastLogin: '2026-07-19 16:15:23'
+  // 홈 화면 뒤로가기 종료 안내 토스트 상태 및 타이머 Ref
+  const [showExitToast, setShowExitToast] = useState(false);
+  const lastExitTimeRef = useRef(0);
+
+  // 로그인 상태 및 사용자 정보 (사내 게이트웨이 인증 세션 연동)
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return sessionStorage.getItem('moorim_is_authenticated') === 'true';
+  });
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = sessionStorage.getItem('moorim_user_info');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) { }
+    }
+    return {
+      name: '전현웅',
+      department: '진주 스마트팩토리파트',
+      position: '대리',
+      employeeId: '20180090',
+      lastLogin: '2026-07-19 16:15:23'
+    };
   });
 
   // 최근 이용 내역 상태
@@ -111,9 +139,104 @@ function App() {
     { id: 3, type: 'ojtGuide', title: '신입사원 OJT 공정 교육 매뉴얼', date: '2026. 07.17', desc: '공장운영부, 공무부, 물류부 신입사원 정기 직무교육...' }
   ]);
 
+  // 통합 내비게이션 상태 변경 및 브라우저 히스토리 push 함수
+  const navigateState = (target, replace = false) => {
+    const nextActiveMenu = target.activeMenu !== undefined ? target.activeMenu : activeMenu;
+    const nextCategory = target.selectedCategory !== undefined ? target.selectedCategory : (target.activeMenu && target.activeMenu !== activeMenu ? null : selectedCategory);
+    const nextDocAssistType = target.docAssistType !== undefined ? target.docAssistType : (target.activeMenu && target.activeMenu !== activeMenu ? null : docAssistType);
+    const nextOjtState = target.ojtState !== undefined ? target.ojtState : (target.activeMenu && target.activeMenu !== activeMenu ? { step: 0, dept: '', part: '', itemIdx: null } : ojtState);
+
+    const isHome = nextActiveMenu === 'home' && nextCategory === null && nextDocAssistType === null && (nextOjtState.step === 0 || !nextOjtState.step);
+
+    const stateObj = {
+      activeMenu: nextActiveMenu,
+      selectedCategory: nextCategory,
+      docAssistType: nextDocAssistType,
+      ojtState: nextOjtState,
+      isRoot: isHome
+    };
+
+    setActiveMenu(nextActiveMenu);
+    setSelectedCategory(nextCategory);
+    setDocAssistType(nextDocAssistType);
+    setOjtState(nextOjtState);
+
+    if (replace) {
+      window.history.replaceState(stateObj, '');
+    } else {
+      window.history.pushState(stateObj, '');
+    }
+  };
+
+  // 브라우저 뒤로가기(모바일 제스처/하드웨어 버튼) 감지 및 연동 useEffect
+  useEffect(() => {
+    const initialHomeState = {
+      activeMenu: 'home',
+      selectedCategory: null,
+      docAssistType: null,
+      ojtState: { step: 0, dept: '', part: '', itemIdx: null },
+      isRoot: true
+    };
+    // 진입 시 루트 히스토리 기준점 설정
+    window.history.replaceState(initialHomeState, '');
+
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state && !state.isRoot) {
+        setActiveMenu(state.activeMenu || 'home');
+        setSelectedCategory(state.selectedCategory !== undefined ? state.selectedCategory : null);
+        setDocAssistType(state.docAssistType !== undefined ? state.docAssistType : null);
+        setOjtState(state.ojtState || { step: 0, dept: '', part: '', itemIdx: null });
+      } else {
+        // 최상위 홈 화면에 도달했을 때
+        const now = Date.now();
+        if (lastExitTimeRef.current && now - lastExitTimeRef.current < 2000) {
+          // 2초 내 재터치 시 정상 이탈/종료 허용
+          window.history.back();
+          return;
+        }
+
+        // 1회차 뒤로가기 터치 시 토스트 알림을 띄우고 앱 종료를 방어
+        lastExitTimeRef.current = now;
+        setShowExitToast(true);
+        setTimeout(() => setShowExitToast(false), 2000);
+
+        setActiveMenu('home');
+        setSelectedCategory(null);
+        setDocAssistType(null);
+        setOjtState({ step: 0, dept: '', part: '', itemIdx: null });
+        window.history.pushState(initialHomeState, '');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // 로그인 성공 콜백
+  const handleLoginSuccess = (userInfo, rememberMe) => {
+    setCurrentUser(userInfo);
+    setIsLoggedIn(true);
+    sessionStorage.setItem('moorim_is_authenticated', 'true');
+    sessionStorage.setItem('moorim_user_info', JSON.stringify(userInfo));
+  };
+
+  // 로그아웃 처리
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    sessionStorage.removeItem('moorim_is_authenticated');
+    sessionStorage.removeItem('moorim_user_info');
+    navigateState({ activeMenu: 'home', selectedCategory: null, docAssistType: null, ojtState: { step: 0, dept: '', part: '', itemIdx: null } }, true);
+  };
+
   // 메뉴 이동 및 이용 내역 기록
   const navigateToMenu = (menuKey, menuName) => {
-    setActiveMenu(menuKey);
+    navigateState({
+      activeMenu: menuKey,
+      selectedCategory: null,
+      docAssistType: null,
+      ojtState: { step: 0, dept: '', part: '', itemIdx: null }
+    });
     const now = new Date();
     const dateStr = `${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
     const newActivity = {
@@ -127,14 +250,13 @@ function App() {
   };
 
   const handleActivityClick = (type) => {
-    if (type === 'chat') {
-      setSelectedCategory(null); // 허브 화면으로 리셋
-    }
-    setActiveMenu(type);
+    navigateState({
+      activeMenu: type,
+      selectedCategory: null,
+      docAssistType: null,
+      ojtState: { step: 0, dept: '', part: '', itemIdx: null }
+    });
   };
-
-  // 선택된 카테고리 탭 상태 변수 (디폴트: null - 카드 형태의 선택기 노출)
-  const [selectedCategory, setSelectedCategory] = useState(null);
 
   // 카테고리별 개별 대화 세션 상태 (트러블슈팅, 작업표준, 위험성평가, 개선제안)
   const [chatSessions, setChatSessions] = useState({
@@ -156,13 +278,12 @@ function App() {
 
   // 홈 화면 초기화 리셋 함수 (로고 클릭 시 홈 화면으로 이동)
   const handleResetHome = () => {
-    setChatSessions({
-      "트러블슈팅": [],
-      "작업표준": [],
-      "위험성평가": [],
-      "개선제안": []
+    navigateState({
+      activeMenu: 'home',
+      selectedCategory: null,
+      docAssistType: null,
+      ojtState: { step: 0, dept: '', part: '', itemIdx: null }
     });
-    setActiveMenu('home');
     setIsSidebarOpen(false);
   };
 
@@ -227,10 +348,10 @@ function App() {
       const targetQuestion1 = "저장품 기자재 입고는 어떻게 하나요?";
       const targetQuestion2 = "설비 일상 보전 및 유지 관리 매뉴얼은?";
       const targetQuestion3 = "제품 파손시 업무 절차는?";
-      suggestionsList = suggestionsList.filter(sug => 
-        sug.text !== targetQuestion1 && 
-        sug.text !== targetQuestion2 && 
-        sug.text !== targetQuestion3 && 
+      suggestionsList = suggestionsList.filter(sug =>
+        sug.text !== targetQuestion1 &&
+        sug.text !== targetQuestion2 &&
+        sug.text !== targetQuestion3 &&
         sug.text !== "자재관리파트의 고정자산 처분 절차는 어떻게 되나요?" &&
         sug.text !== "생산부의 원단위 분석 및 실적 산출 방법은 무엇인가요?" &&
         sug.text !== "품질보증파트의 인증 관리 업무 절차는 어떻게 되나요?"
@@ -1300,16 +1421,32 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
     }
   };
 
+  // 현재 홈 최상단 화면이 아닌지 여부 판별 (뒤로가기 버튼 노출 조건)
+  const canGoBack = activeMenu !== 'home' || selectedCategory !== null || docAssistType !== null || (ojtState && ojtState.step > 0);
+
+  // 헤더 뒤로가기 클릭 핸들러 (브라우저 히스토리 popstate와 100% 동일하게 동작)
+  const handleHeaderBack = () => {
+    window.history.back();
+  };
+
   // 현재 활성화된 메뉴 명칭 반환 (상태 표시줄 및 헤더에 표시할 텍스트)
   const getTabTitle = () => {
     switch (activeMenu) {
       case 'home':
         return '무림AI-ON';
       case 'chat':
+        if (selectedCategory) return `문서 네비 > ${selectedCategory}`;
         return '문서 네비게이션';
       case 'docAssist':
+        if (docAssistType === 'weekly_report') return '업무보고서 어시스트';
+        if (docAssistType === 'improvement_proposal') return '개선 제안서';
+        if (docAssistType === 'risk_assessment') return '위험성 평가';
+        if (docAssistType === 'draft_document') return '품의서 작성';
         return '문서 어시스트';
       case 'ojtGuide':
+        if (ojtState.step === 1) return 'OJT > 학습 목록';
+        if (ojtState.step === 2) return 'OJT > 세부 학습';
+        if (ojtState.step === 3) return 'OJT > 학습 검증';
         return 'OJT 가이드';
       case 'myInfo':
         return '내 정보';
@@ -1317,6 +1454,11 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
         return '무림AI-ON';
     }
   };
+
+  // 로그인되지 않은 경우 사내 게이트웨이 로그인 페이지를 우선 렌더링
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={handleLoginSuccess} />;
+  }
 
   return (
     <>
@@ -1327,6 +1469,18 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
         </div>
 
         <header className="mobile-header">
+          <div className="mobile-header-left">
+            {canGoBack && (
+              <button
+                className="mobile-header-back-btn"
+                onClick={handleHeaderBack}
+                title="이전 화면으로 이동"
+                aria-label="이전 화면으로 이동"
+              >
+                <ChevronLeft size={22} />
+              </button>
+            )}
+          </div>
           <div className="mobile-logo-container" onClick={handleResetHome}>
             <img
               src="/logo.png"
@@ -1336,6 +1490,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
             <span className="mobile-logo-divider"></span>
             <span className="mobile-service-name">AI-ON</span>
           </div>
+          <div className="mobile-header-right"></div>
         </header>
 
         {/* 모바일 화면용 오버레이배경 */}
@@ -1412,17 +1567,18 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
         <main className="content-area">
           {activeMenu === 'home' && (
             <div className="home-dashboard">
-              {/* 심플한 타이틀 헤더 */}
+              {/* 심플한 사용자 인사말 카드 */}
               <div className="home-simple-header">
-                <span className="home-subtitle">무림 사내 지식 플랫폼</span>
-                <h1>AI-ON</h1>
                 {isLoggedIn ? (
                   <div className="home-greeting-container">
-                    <h2 className="home-greeting">안녕하세요, {currentUser.name}님!</h2>
+                    <h2 className="home-greeting">안녕하세요, {currentUser.name}님! 👋</h2>
                     <p className="home-greeting-sub">무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
                   </div>
                 ) : (
-                  <p>무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
+                  <div className="home-greeting-container">
+                    <h2 className="home-greeting">무림 사내 지식 플랫폼</h2>
+                    <p className="home-greeting-sub">무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
+                  </div>
                 )}
               </div>
 
@@ -1503,7 +1659,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
 
                   {/* 4대 카테고리 카드 그리드 */}
                   <div className="nav-card-selector" style={{ gap: '0.45rem', marginBottom: '0.2rem' }}>
-                    <div className="nav-card" onClick={() => setSelectedCategory('트러블슈팅')} style={{ padding: '0.7rem 1rem' }}>
+                    <div className="nav-card" onClick={() => navigateState({ activeMenu: 'chat', selectedCategory: '트러블슈팅' })} style={{ padding: '0.7rem 1rem' }}>
                       <div className="nav-card-icon troubleshooting" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>🔧</div>
                       <div className="nav-card-content">
                         <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>트러블슈팅</h3>
@@ -1512,7 +1668,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                       <div className="nav-card-arrow">→</div>
                     </div>
 
-                    <div className="nav-card" onClick={() => setSelectedCategory('작업표준')} style={{ padding: '0.7rem 1rem' }}>
+                    <div className="nav-card" onClick={() => navigateState({ activeMenu: 'chat', selectedCategory: '작업표준' })} style={{ padding: '0.7rem 1rem' }}>
                       <div className="nav-card-icon work-standard" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>📋</div>
                       <div className="nav-card-content">
                         <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>작업표준</h3>
@@ -1521,7 +1677,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                       <div className="nav-card-arrow">→</div>
                     </div>
 
-                    <div className="nav-card" onClick={() => setSelectedCategory('위험성평가')} style={{ padding: '0.7rem 1rem' }}>
+                    <div className="nav-card" onClick={() => navigateState({ activeMenu: 'chat', selectedCategory: '위험성평가' })} style={{ padding: '0.7rem 1rem' }}>
                       <div className="nav-card-icon risk-assessment" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>⚠️</div>
                       <div className="nav-card-content">
                         <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>위험성평가</h3>
@@ -1530,7 +1686,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                       <div className="nav-card-arrow">→</div>
                     </div>
 
-                    <div className="nav-card" onClick={() => setSelectedCategory('개선제안')} style={{ padding: '0.7rem 1rem' }}>
+                    <div className="nav-card" onClick={() => navigateState({ activeMenu: 'chat', selectedCategory: '개선제안' })} style={{ padding: '0.7rem 1rem' }}>
                       <div className="nav-card-icon improvement-proposal" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>💡</div>
                       <div className="nav-card-content">
                         <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>개선제안</h3>
@@ -1540,7 +1696,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                     </div>
 
                     {/* 신규 추가: 업무매뉴얼 카드 (실제 대화방 연결) */}
-                    <div className="nav-card" onClick={() => setSelectedCategory('업무매뉴얼')} style={{ padding: '0.7rem 1rem' }}>
+                    <div className="nav-card" onClick={() => navigateState({ activeMenu: 'chat', selectedCategory: '업무매뉴얼' })} style={{ padding: '0.7rem 1rem' }}>
                       <div className="nav-card-icon work-manual" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>📖</div>
                       <div className="nav-card-content">
                         <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>업무매뉴얼</h3>
@@ -1555,7 +1711,7 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
                 <>
                   {/* 상단 액티브 카테고리 헤더 */}
                   <div className="chat-category-header">
-                    <button className="chat-back-btn" onClick={() => setSelectedCategory(null)}>
+                    <button className="chat-back-btn" onClick={() => window.history.back()}>
                       ← 전체 카테고리
                     </button>
                     <div className="active-category-title">
@@ -1676,77 +1832,57 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
               )}
             </div>
           )}
-          {activeMenu === 'docAssist' && <DocAssistPanel messages={messages} />}
-          {activeMenu === 'ojtGuide' && <OjtGuidePanel />}
+          {activeMenu === 'docAssist' && (
+            <DocAssistPanel
+              messages={messages}
+              selectedDocType={docAssistType}
+              onSelectDocType={(type) => navigateState({ activeMenu: 'docAssist', docAssistType: type })}
+              onBack={() => window.history.back()}
+            />
+          )}
+          {activeMenu === 'ojtGuide' && (
+            <OjtGuidePanel
+              ojtState={ojtState}
+              onOjtStateChange={(next) => navigateState({ activeMenu: 'ojtGuide', ojtState: next })}
+              onBack={() => window.history.back()}
+            />
+          )}
           {activeMenu === 'myInfo' && (
             <div className="my-info-container">
-              {isLoggedIn ? (
-                <div className="profile-card">
-                  <div className="profile-header">
-                    <div className="profile-avatar">
-                      <User size={48} />
-                    </div>
-                    <div className="profile-main-info">
-                      <h2>{currentUser.name} {currentUser.position}</h2>
-                      <p>{currentUser.department}</p>
-                    </div>
+              <div className="profile-card">
+                <div className="profile-header">
+                  <div className="profile-avatar">
+                    <User size={48} />
                   </div>
-                  
-                  <div className="profile-details">
-                    <div className="detail-row">
-                      <span className="detail-label">사번</span>
-                      <span className="detail-value">{currentUser.employeeId}</span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">소속 부서</span>
-                      <span className="detail-value">{currentUser.department}</span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">직급</span>
-                      <span className="detail-value">{currentUser.position}</span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">최근 로그인</span>
-                      <span className="detail-value">{currentUser.lastLogin}</span>
-                    </div>
+                  <div className="profile-main-info">
+                    <h2>{currentUser.name} {currentUser.position}</h2>
+                    <p>{currentUser.department}</p>
                   </div>
+                </div>
 
-                  <button className="logout-btn" onClick={() => {
-                    setIsLoggedIn(false);
-                    setModalMessage("로그아웃 되었습니다.");
-                    setIsModalOpen(true);
-                  }}>
-                    로그아웃
-                  </button>
-                </div>
-              ) : (
-                <div className="login-card">
-                  <div className="login-header">
-                    <h2>로그인</h2>
-                    <p>사내 지식 플랫폼 AI-ON을 시작합니다.</p>
+                <div className="profile-details">
+                  <div className="detail-row">
+                    <span className="detail-label">사번</span>
+                    <span className="detail-value">{currentUser.employeeId}</span>
                   </div>
-                  <div className="login-form">
-                    <div className="input-group">
-                      <label htmlFor="login-emp-id">사번</label>
-                      <input id="login-emp-id" type="text" defaultValue={currentUser.employeeId} placeholder="사번을 입력하세요" />
-                    </div>
-                    <div className="input-group">
-                      <label htmlFor="login-password">비밀번호</label>
-                      <input id="login-password" type="password" defaultValue="••••••••" placeholder="비밀번호를 입력하세요" />
-                    </div>
-                    <button className="login-btn" onClick={() => {
-                      setIsLoggedIn(true);
-                      const now = new Date();
-                      const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-                      setCurrentUser(prev => ({ ...prev, lastLogin: timeStr }));
-                      setModalMessage("로그인 되었습니다. 반갑습니다, 전현웅 대리님!");
-                      setIsModalOpen(true);
-                    }}>
-                      로그인
-                    </button>
+                  <div className="detail-row">
+                    <span className="detail-label">소속 부서</span>
+                    <span className="detail-value">{currentUser.department}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">직급</span>
+                    <span className="detail-value">{currentUser.position}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">최근 로그인</span>
+                    <span className="detail-value">{currentUser.lastLogin}</span>
                   </div>
                 </div>
-              )}
+
+                <button className="logout-btn" onClick={handleLogout}>
+                  로그아웃
+                </button>
+              </div>
             </div>
           )}
         </main>
@@ -1755,40 +1891,47 @@ PM3 스캐너에서 평량 측정 데이터 처리와 관련된 문제가 발생
         <div className="mobile-bottom-tab-bar">
           <button
             className={`mobile-tab-item ${activeMenu === 'home' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('home')}
+            onClick={() => navigateState({ activeMenu: 'home', selectedCategory: null, docAssistType: null, ojtState: { step: 0, dept: '', part: '', itemIdx: null } })}
           >
             <Home size={18} />
             <span>홈</span>
           </button>
           <button
             className={`mobile-tab-item ${activeMenu === 'chat' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('chat')}
+            onClick={() => navigateState({ activeMenu: 'chat', selectedCategory: null, docAssistType: null, ojtState: { step: 0, dept: '', part: '', itemIdx: null } })}
           >
             <Compass size={18} />
             <span>문서 네비</span>
           </button>
           <button
             className={`mobile-tab-item ${activeMenu === 'docAssist' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('docAssist')}
+            onClick={() => navigateState({ activeMenu: 'docAssist', docAssistType: null, selectedCategory: null, ojtState: { step: 0, dept: '', part: '', itemIdx: null } })}
           >
             <Sparkles size={18} />
             <span>문서 어시스트</span>
           </button>
           <button
             className={`mobile-tab-item ${activeMenu === 'ojtGuide' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('ojtGuide')}
+            onClick={() => navigateState({ activeMenu: 'ojtGuide', ojtState: { step: 0, dept: '', part: '', itemIdx: null }, selectedCategory: null, docAssistType: null })}
           >
             <GraduationCap size={18} />
             <span>OJT 가이드</span>
           </button>
           <button
             className={`mobile-tab-item ${activeMenu === 'myInfo' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('myInfo')}
+            onClick={() => navigateState({ activeMenu: 'myInfo', selectedCategory: null, docAssistType: null, ojtState: { step: 0, dept: '', part: '', itemIdx: null } })}
           >
             <User size={18} />
             <span>내 정보</span>
           </button>
         </div>
+
+        {/* 모바일 뒤로가기 1회 시 노출되는 종료 방어 안내 토스트 */}
+        {showExitToast && (
+          <div className="mobile-exit-toast">
+            <span>뒤로가기 버튼을 한 번 더 누르면 종료됩니다.</span>
+          </div>
+        )}
 
         {/* 글로벌 알림 모달 창 (준비 중 안내 목적) */}
         {isModalOpen && (

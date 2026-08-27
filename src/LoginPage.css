@@ -1,0 +1,202 @@
+/* LoginPage.css - 심플하고 정갈한 로그인 화면 스타일 */
+
+.login-app-wrapper {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.login-content-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 1.2rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.login-native-container {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+}
+
+/* 카드 내부 헤더 */
+.login-simple-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.login-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem 0;
+}
+
+.login-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* 카드 박스 */
+.login-card-native {
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #eef2f6);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: 1.8rem 1.4rem;
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.05));
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* 폼 요소 */
+.login-form-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.native-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.native-input-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.native-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.native-input-box .box-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--text-muted, #94a3b8);
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.native-input-box input {
+  width: 100%;
+  height: 44px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--border-radius-md, 8px);
+  padding: 0 2.4rem 0 2.4rem;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  transition: all var(--transition-fast, 0.15s ease);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.native-input-box input::placeholder {
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.82rem;
+}
+
+.native-input-box input:focus {
+  border-color: var(--accent-color, #0d9488);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+}
+
+.native-input-box:focus-within .box-icon {
+  color: var(--accent-color, #0d9488);
+}
+
+.box-toggle-btn {
+  position: absolute;
+  right: 0.7rem;
+  background: none;
+  border: none;
+  color: var(--text-muted, #94a3b8);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.box-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+/* 에러 알림 */
+.native-error-box {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+/* 로그인 버튼 */
+.native-submit-btn {
+  height: 44px;
+  background: var(--accent-color, #0d9488);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius-md, 8px);
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s ease);
+  margin-top: 0.2rem;
+}
+
+.native-submit-btn:hover:not(:disabled) {
+  background: #0f766e;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+}
+
+.native-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.native-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* 초기 아이디 / 비번 안내 박스 */
+.native-guide-box {
+  background: #f8fafc;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--border-radius-md, 8px);
+  padding: 0.75rem 0.9rem;
+  text-align: center;
+}
+
+.guide-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.guide-text strong {
+  color: var(--accent-color, #0d9488);
+  font-weight: 700;
+}

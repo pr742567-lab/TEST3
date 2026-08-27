@@ -687,19 +687,41 @@ const COMMON_CONTENT = {
 };
 
 // ──────────────────────────────────────
-// 메인 컴포넌트
-// ──────────────────────────────────────
-const OjtGuidePanel = () => {
-  // 스텝: 0=부서선택, 1=학습목록, 2=세부학습, 3=퀴즈
-  const [step, setStep] = useState(0);
+const OjtGuidePanel = ({
+  ojtState: propOjtState,
+  onOjtStateChange,
+  onBack: propOnBack
+}) => {
+  // 내부 fallback 상태
+  const [internalState, setInternalState] = useState({
+    step: 0,
+    dept: '',
+    part: '',
+    itemIdx: null
+  });
 
-  // Step 0 상태
-  const [selectedDept, setSelectedDept] = useState('');
-  const [selectedPart, setSelectedPart] = useState('');
+  const currentState = propOjtState !== undefined ? propOjtState : internalState;
+  const step = currentState.step !== undefined ? currentState.step : 0;
+  const selectedDept = currentState.dept || '';
+  const selectedPart = currentState.part || '';
+  const selectedItemIdx = currentState.itemIdx !== undefined ? currentState.itemIdx : null;
+
+  const updateState = (updates) => {
+    const next = { ...currentState, ...updates };
+    if (onOjtStateChange) {
+      onOjtStateChange(next);
+    } else {
+      setInternalState(next);
+    }
+  };
+
+  const setStep = (newStep) => updateState({ step: newStep });
+  const setSelectedDept = (dept) => updateState({ dept });
+  const setSelectedPart = (part) => updateState({ part });
+  const setSelectedItemIdx = (itemIdx) => updateState({ itemIdx });
+
+  // 모달 상태
   const [showModal, setShowModal] = useState(false);
-
-  // Step 1 상태 - 선택한 학습 항목 인덱스
-  const [selectedItemIdx, setSelectedItemIdx] = useState(null);
 
   // Step 2 상태
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -763,11 +785,15 @@ const OjtGuidePanel = () => {
 
   // 목록으로 돌아가기 (세부 상태 초기화)
   const handleBackToList = () => {
-    setStep(1);
-    setSelectedItemIdx(null);
-    setIsConfirmed(false);
-    setAnswers({});
-    setSubmitted(false);
+    if (propOnBack) {
+      propOnBack();
+    } else {
+      setStep(1);
+      setSelectedItemIdx(null);
+      setIsConfirmed(false);
+      setAnswers({});
+      setSubmitted(false);
+    }
   };
 
   // ─── 렌더링 ───
@@ -864,7 +890,7 @@ const OjtGuidePanel = () => {
       {/* ═══════════ Step 1: 학습 항목 목록 ═══════════ */}
       {step === 1 && (
         <div className="ojt-learning-screen">
-          <button className="ojt-back-btn" onClick={() => setStep(0)}>
+          <button className="ojt-back-btn" onClick={() => propOnBack ? propOnBack() : setStep(0)}>
             <ChevronLeft size={16} /> 부서 선택으로 돌아가기
           </button>
 
@@ -899,7 +925,7 @@ const OjtGuidePanel = () => {
               <div
                 className="ojt-item-card"
                 key={idx}
-                onClick={() => { setSelectedItemIdx(idx); setStep(2); }}
+                onClick={() => updateState({ itemIdx: idx, step: 2 })}
               >
                 <div className="ojt-item-card-icon">{item.icon}</div>
                 <div className="ojt-item-card-body">
@@ -994,7 +1020,7 @@ const OjtGuidePanel = () => {
       {/* ═══════════ Step 3: 퀴즈 (검증) ═══════════ */}
       {step === 3 && currentItem && (
         <div className="ojt-quiz-screen">
-          <button className="ojt-back-btn" onClick={() => { setStep(2); setSubmitted(false); setAnswers({}); }}>
+          <button className="ojt-back-btn" onClick={() => { if (propOnBack) propOnBack(); else { setStep(2); setSubmitted(false); setAnswers({}); } }}>
             <ChevronLeft size={16} /> 학습 화면으로 돌아가기
           </button>
 
