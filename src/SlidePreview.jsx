@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Download, ChevronLeft, ChevronRight, Loader, AlertCircle, CheckCircle } from 'lucide-react';
 
 // 백엔드 API 주소

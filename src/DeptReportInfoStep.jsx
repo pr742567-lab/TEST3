@@ -1,4 +1,3 @@
-import React from 'react';
 import { Building2, Calendar, Clock, ChevronRight } from 'lucide-react';
 import './DeptReportForm.css';
 
@@ -25,7 +24,6 @@ const DeptReportInfoStep = ({
   planEnd,
   setPlanEnd,
   departments = [],
-  categories = {},
   onNext,
   onDepartmentChange // 부서가 바뀔 때 초기 항목을 생성하기 위한 콜백 함수
 }) => {

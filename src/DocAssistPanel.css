@@ -1807,3 +1807,640 @@
   display: none !important;
 }
 
+/* ═══════════════════════════════════════════════════════ */
+/* 💡 개선 제안(Improvement Proposal) 검색 중심 UI 스타일 */
+/* ═══════════════════════════════════════════════════════ */
+
+/* 전체 스크롤 컨테이너 */
+.proposal-search-scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  flex-grow: 1;
+  min-height: 0;
+  padding: 0.5rem 0.6rem 2.5rem 0.6rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+/* 웰컴 히어로 배너 (컴팩트) */
+.proposal-hero-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.08) 0%, rgba(245, 158, 11, 0.02) 100%);
+  border: 1px solid rgba(234, 179, 8, 0.22);
+  border-radius: var(--border-radius-md);
+}
+
+.hero-icon-box {
+  font-size: 1.3rem;
+  background: #fef3c7;
+  color: #d97706;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hero-text-box h3 {
+  margin: 0 0 0.15rem 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.hero-text-box p {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+/* ─── 중앙 검색 박스 ─── */
+/* ─── 모던 개선 제안 검색 박스 (Proposal Query Box) ─── */
+.proposal-query-box {
+  background: var(--bg-surface, #ffffff);
+  border: 1.5px solid var(--border-color, #e2e8f0);
+  border-radius: 14px;
+  padding: 0.9rem;
+  box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.05), 0 2px 5px -1px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-sizing: border-box;
+}
+
+/* 1. 검색 인풋 + 조회 버튼 통합 행 */
+.proposal-search-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.proposal-main-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 1.8rem 0 2.2rem;
+  border: 1.5px solid var(--border-color, #cbd5e1);
+  border-radius: 9px;
+  font-size: 0.84rem;
+  background: var(--bg-surface-heavy, #f8fafc);
+  color: var(--text-primary, #1e293b);
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.proposal-main-input::placeholder {
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.82rem;
+}
+
+.proposal-main-input:focus {
+  border-color: var(--accent-color, #0d9488);
+  background: var(--bg-surface, #ffffff);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.14);
+}
+
+.search-input-wrapper:focus-within .search-input-icon {
+  color: var(--accent-color, #0d9488);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.5rem;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  border: none;
+  border-radius: 50%;
+  color: #64748b;
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.search-clear-btn:hover {
+  background: #cbd5e1;
+  color: #1e293b;
+}
+
+/* 조회 버튼 */
+.proposal-search-submit-btn {
+  height: 38px;
+  padding: 0 0.9rem;
+  background: var(--accent-color, #0d9488);
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(13, 148, 136, 0.22);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.proposal-search-submit-btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 4px 8px rgba(13, 148, 136, 0.3);
+  transform: translateY(-1px);
+}
+
+.proposal-search-submit-btn:active {
+  transform: translateY(0);
+}
+
+/* 2. 3열 스마트 필터 바 (한 줄에 딱 맞게 정돈) */
+.proposal-filter-grid {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed var(--border-color, #e2e8f0);
+  width: 100%;
+}
+
+.filter-select-wrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface-heavy, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 7px;
+  padding: 0.25rem 0.4rem;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.filter-select-wrapper:hover,
+.filter-select-wrapper:focus-within {
+  border-color: var(--accent-color, #0d9488);
+  background: var(--bg-surface, #ffffff);
+}
+
+.filter-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.filter-select {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--text-primary, #1e293b);
+  outline: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+.filter-reset-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--bg-surface-heavy, #f1f5f9);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 7px;
+  color: var(--text-muted, #64748b);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.filter-reset-icon-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #ef4444;
+  transform: rotate(-45deg);
+}
+
+/* 3. 추천 키워드 영역 */
+.proposal-keywords-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.keywords-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+}
+
+.keywords-header .sparkle-icon {
+  color: #f59e0b;
+}
+
+.keywords-chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.keyword-chip-btn {
+  background: var(--bg-surface-heavy, #f1f5f9);
+  border: 1px solid var(--border-color, #e2e8f0);
+  color: var(--text-secondary, #475569);
+  border-radius: 6px;
+  padding: 0.2rem 0.48rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.keyword-chip-btn:hover {
+  background: rgba(13, 148, 136, 0.08);
+  border-color: var(--accent-color, #0d9488);
+  color: var(--accent-color, #0d9488);
+  transform: translateY(-1px);
+}
+
+/* ─── 새 제안서 바로 작성하기 버튼 (심플 & 모던 CTA) ─── */
+.proposal-quick-write-container {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.proposal-quick-write-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1rem;
+  background: var(--bg-surface, #ffffff);
+  border: 1.5px dashed var(--accent-color, #0d9488);
+  border-radius: 12px;
+  color: var(--accent-color, #0d9488);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.06);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.proposal-quick-write-btn .arrow-icon {
+  transition: transform 0.2s ease;
+}
+
+.proposal-quick-write-btn:hover {
+  background: var(--accent-color, #0d9488);
+  color: #ffffff;
+  border-style: solid;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+  transform: translateY(-1px);
+}
+
+.proposal-quick-write-btn:hover .arrow-icon {
+  transform: translateX(3px);
+}
+
+.proposal-quick-write-btn:active {
+  transform: translateY(0);
+}
+
+/* ─── 검색 후 결과 섹션 ─── */
+.proposal-search-results-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+/* 결과 상태 바 & 제안서 작성 버튼 */
+.results-status-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--border-radius-md);
+  padding: 0.6rem 0.85rem;
+}
+
+.status-text {
+  font-size: 0.82rem;
+  color: #166534;
+}
+
+.status-text strong {
+  font-weight: 700;
+}
+
+.results-write-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.8rem;
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast);
+}
+
+.results-write-btn:hover {
+  opacity: 0.9;
+}
+
+/* 콤팩트 실적 리스트 */
+.compact-proposal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+/* 콤팩트 실적 카드 (슬림형 2줄) */
+.compact-proposal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.compact-proposal-card:hover {
+  border-color: var(--accent-color);
+  background: #fcfefe;
+}
+
+.card-header-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.left-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.badge-no {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+}
+
+.badge-year {
+  font-size: 0.7rem;
+  color: #475569;
+  background: #e2e8f0;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.badge-dept {
+  font-size: 0.7rem;
+  color: #166534;
+  background: #dcfce7;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+}
+
+.badge-name {
+  font-size: 0.72rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* 등급 뱃지 (초슬림) */
+.compact-grade-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 9999px;
+  min-width: 22px;
+  text-align: center;
+  display: inline-block;
+}
+
+.grade-badge-a { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+.grade-badge-b { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+.grade-badge-c { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.grade-badge-d { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.grade-badge-reject { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+/* 본문 제안명 (슬림) */
+.card-body-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.search-highlight {
+  background-color: #fef08a;
+  color: #854d0e;
+  padding: 0 0.15rem;
+  border-radius: 2px;
+}
+
+/* 푸터 라인 (구분) */
+.card-footer-line {
+  display: flex;
+  align-items: center;
+}
+
+.category-text {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+/* 검색 결과 없음 */
+.proposal-empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.2rem 1rem;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1.5px dashed var(--border-color);
+  border-radius: var(--border-radius-md);
+}
+
+.empty-emoji {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.proposal-empty-box h4 {
+  margin: 0 0 0.3rem 0;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+
+.proposal-empty-box p {
+  margin: 0 0 1rem 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.empty-action-write-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+}
+
+/* 하단 작성 도크 */
+.bottom-write-dock {
+  margin-top: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-surface-heavy);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 0.75rem 0.9rem;
+}
+
+.bottom-write-dock span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.dock-write-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.95rem;
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.dock-write-btn:hover {
+  opacity: 0.92;
+}
+
+/* 페이지네이션 */
+.proposal-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 0.5rem 0;
+}
+
+.pagination-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.pagination-info {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ─── 모바일 반응형 ─── */
+@media (max-width: 768px) {
+  .proposal-hero-banner {
+    padding: 0.55rem 0.75rem;
+  }
+  .proposal-input-main-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .proposal-search-action-btn {
+    justify-content: center;
+  }
+}
+
+

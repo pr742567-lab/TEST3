@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FileText, Sparkles, Eye, ArrowLeft, Download, ChevronLeft, ChevronRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { FileText, Sparkles, Eye, ArrowLeft, Download, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { API_BASE_URL } from './utils/api';
 import './DocAssistPanel.css';
 import './DeptReportForm.css';
@@ -395,9 +395,14 @@ const DraftDocumentTab = ({ onBack }) => {
                   {isRefining ? (
                     <><Loader2 size={16} className="upload-spinner" /> 공문서 말투로 정제 중...</>
                   ) : (
-                    <><Sparkles size={16} /> 내용 다듬기</>
+                    <><Sparkles size={16} /> {isRefined ? '다시 다듬기' : '내용 다듬기'}</>
                   )}
                 </button>
+                {isRefined && (
+                  <span style={{ fontSize: '0.85rem', color: '#16a34a', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    ✓ 표준 공문서 양식으로 정제 완료됨
+                  </span>
+                )}
               </div>
             </div>
 

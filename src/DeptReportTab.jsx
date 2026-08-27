@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FileText, Sparkles, Eye, ClipboardList, ArrowLeft } from 'lucide-react';
 import DeptReportInfoStep from './DeptReportInfoStep';
 import DeptReportEntriesStep from './DeptReportEntriesStep';
@@ -7,6 +7,52 @@ import DeptReportPreview from './DeptReportPreview';
 import { API_BASE_URL } from './utils/api';
 import './DeptReportForm.css';
 
+// 날짜 포맷팅 함수 (YYYY-MM-DD)
+const formatDate = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+// 주차 계산 헬퍼 함수
+const getWeekOfMonth = (date) => {
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  const dayOfWeek = firstDay.getDay(); // 0: 일요일, 1: 월요일, ...
+  // 월요일 기준으로 주차 계산을 맞추기 위한 보정
+  const adjustedDate = date.getDate() + (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
+  return Math.ceil(adjustedDate / 7);
+};
+
+// 기본 주차 및 날짜 계산 초기화 함수
+const getInitialDates = () => {
+  const today = new Date();
+  const currentDay = today.getDay(); // 0: 일, 1: 월, ...
+  
+  // 이번 주 월요일 ~ 일요일 계산
+  const diffToMon = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+  const thisMon = new Date(today.getFullYear(), today.getMonth(), diffToMon);
+  
+  const thisSun = new Date(thisMon);
+  thisSun.setDate(thisMon.getDate() + 6);
+  
+  // 다음 주 월요일 ~ 일요일 계산
+  const nextMon = new Date(thisMon);
+  nextMon.setDate(thisMon.getDate() + 7);
+  
+  const nextSun = new Date(nextMon);
+  nextSun.setDate(nextMon.getDate() + 6);
+
+  return {
+    year: today.getFullYear(),
+    month: today.getMonth() + 1,
+    week: getWeekOfMonth(today),
+    perfStart: formatDate(thisMon),
+    perfEnd: formatDate(thisSun),
+    planStart: formatDate(nextMon),
+    planEnd: formatDate(nextSun)
+  };
+};
 
 /**
  * 진주공장 주요 업무보고 탭 컴포넌트 (Component)
@@ -17,19 +63,21 @@ import './DeptReportForm.css';
  *   3단계: AI 내용 다듬기 (말투 및 포맷 정제)
  *   4단계: 미리보기 & 내보내기 (PPTX 다운로드)
  */
-const DeptReportTab = ({ messages = [], onBack }) => {
+const DeptReportTab = ({ onBack }) => {
+  const initialDates = getInitialDates();
+
   // 현재 진행 중인 워크플로우 단계 (1 ~ 4)
   const [currentStep, setCurrentStep] = useState(1);
 
   // ─── 부서 및 기간 상태 (State) ─── //
   const [department, setDepartment] = useState('');
-  const [year, setYear] = useState(2026);
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
-  const [week, setWeek] = useState(1);
-  const [perfStart, setPerfStart] = useState('');
-  const [perfEnd, setPerfEnd] = useState('');
-  const [planStart, setPlanStart] = useState('');
-  const [planEnd, setPlanEnd] = useState('');
+  const [year, setYear] = useState(initialDates.year);
+  const [month, setMonth] = useState(initialDates.month);
+  const [week, setWeek] = useState(initialDates.week);
+  const [perfStart, setPerfStart] = useState(initialDates.perfStart);
+  const [perfEnd, setPerfEnd] = useState(initialDates.perfEnd);
+  const [planStart, setPlanStart] = useState(initialDates.planStart);
+  const [planEnd, setPlanEnd] = useState(initialDates.planEnd);
 
   // ─── 업무 항목 목록 상태 (State) ─── //
   const [entries, setEntries] = useState([]);
@@ -41,24 +89,7 @@ const DeptReportTab = ({ messages = [], onBack }) => {
   const [departments, setDepartments] = useState([]);
   const [categories, setCategories] = useState({});
 
-  // 날짜 포맷팅 함수 (YYYY-MM-DD)
-  const formatDate = (date) => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  };
-
-  // 주차 계산 헬퍼 함수
-  const getWeekOfMonth = (date) => {
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const dayOfWeek = firstDay.getDay(); // 0: 일요일, 1: 월요일, ...
-    // 월요일 기준으로 주차 계산을 맞추기 위한 보정
-    const adjustedDate = date.getDate() + (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
-    return Math.ceil(adjustedDate / 7);
-  };
-
-  // 부서 및 카테고리 리스트 조회 및 날짜 초기값 자동 설정 (Mount 시점 1회 실행)
+  // 부서 및 카테고리 리스트 조회 (Mount 시점 1회 실행)
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/dept-report/departments`)
       .then((res) => res.json())
@@ -67,32 +98,6 @@ const DeptReportTab = ({ messages = [], onBack }) => {
         setCategories(data.categories || {});
       })
       .catch((err) => console.error('부서 목록을 불러오는 중 오류 발생:', err));
-
-    // 오늘 날짜 기준 기본 주차 및 기간 설정
-    const today = new Date();
-    const currentDay = today.getDay(); // 0: 일, 1: 월, ...
-    
-    // 이번 주 월요일 ~ 일요일 계산
-    const diffToMon = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
-    const thisMon = new Date(today.getFullYear(), today.getMonth(), diffToMon);
-    
-    const thisSun = new Date(thisMon);
-    thisSun.setDate(thisMon.getDate() + 6);
-    
-    // 다음 주 월요일 ~ 일요일 계산
-    const nextMon = new Date(thisMon);
-    nextMon.setDate(thisMon.getDate() + 7);
-    
-    const nextSun = new Date(nextMon);
-    nextSun.setDate(nextMon.getDate() + 6);
-    
-    setYear(today.getFullYear());
-    setMonth(today.getMonth() + 1);
-    setWeek(getWeekOfMonth(today));
-    setPerfStart(formatDate(thisMon));
-    setPerfEnd(formatDate(thisSun));
-    setPlanStart(formatDate(nextMon));
-    setPlanEnd(formatDate(nextSun));
   }, []);
 
   // 부서 선택 시 초기 항목(실적 1개, 계획 1개) 생성
@@ -151,7 +156,11 @@ const DeptReportTab = ({ messages = [], onBack }) => {
   const buildReportData = () => {
     const cleanedEntries = entries
       .filter((e) => e.content.trim())
-      .map(({ isCustomCategory, ...rest }) => rest);
+      .map((e) => {
+        const item = { ...e };
+        delete item.isCustomCategory;
+        return item;
+      });
 
     return {
       document_type: 'weekly_report',

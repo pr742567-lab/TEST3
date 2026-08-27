@@ -1004,12 +1004,12 @@ body {
   opacity: 0.95;
 }
 
-/* 모바일 전용 헤더 (3열 그리드: 좌측 뒤로가기 | 중앙 로고 | 우측 여백) */
+/* 모바일 전용 상단 심플 헤더 */
 .mobile-header {
-  display: grid;
-  grid-template-columns: 48px 1fr 48px;
+  display: flex;
   align-items: center;
-  padding: 0 0.75rem;
+  justify-content: center;
+  padding: 0 1rem;
   background: var(--accent-color);
   position: sticky;
   top: 0;
@@ -1020,47 +1020,65 @@ body {
   width: 100%;
 }
 
-.mobile-header-left {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 48px;
-  width: 48px;
-  height: 100%;
-}
-
-.mobile-header-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 48px;
-  width: 48px;
-  height: 100%;
-}
-
-.mobile-header-back-btn {
+.mobile-page-header-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  gap: 8px;
+  margin: 0 auto;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.mobile-page-header-title .page-header-icon {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
 }
 
-.mobile-header-back-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
-  transform: scale(1.05);
+.mobile-page-header-title .page-header-text {
+  color: #ffffff;
+  font-size: 1.12rem;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
-.mobile-header-back-btn:active {
-  background: rgba(255, 255, 255, 0.4);
-  transform: scale(0.95);
+/* 모바일 화면 좌측 하단 플로팅 뒤로가기 버튼 (하단 메뉴바 상단 위치) */
+.floating-back-btn {
+  position: absolute;
+  bottom: 74px;
+  left: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: var(--accent-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 150;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+}
+
+.floating-back-btn:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  background: var(--bg-surface);
+  color: var(--accent-color);
+}
+
+.floating-back-btn:active {
+  transform: scale(0.94);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .mobile-menu-toggle {
@@ -1317,22 +1335,17 @@ body {
   bottom: 0;
   left: 0;
   display: flex;
-  /* 항시 활성화 */
   width: 100%;
   height: 60px;
-  /* 콤팩트하게 최적화 */
-  background: #ffffff;
-  /* 순백색 처리 */
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
   border-top: 1px solid #eef2f6;
-  /* 연하고 얇은 경계선 */
   z-index: 200;
   justify-content: space-around;
   align-items: center;
-  padding: 0 0.8rem;
+  padding: 0 0.4rem;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.03);
-  /* 아주 은은한 그림자 */
   flex-shrink: 0;
-  /* flex 레이아웃 내에서 하단 탭바 크기 축소 방지 */
 }
 
 .mobile-tab-item {
@@ -1343,36 +1356,63 @@ body {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  /* 비활성 탭은 덜 튀는 회색으로 설정 */
-  gap: 0.25rem;
-  font-size: 0.72rem;
+  gap: 2px;
+  font-size: 0.68rem;
   font-weight: 600;
   cursor: pointer;
   flex: 1;
-  /* 80px에서 변경하여 5개 탭 등분할 반응형 지원 */
-  height: 100%;
-  transition: all var(--transition-fast);
+  min-width: 0;
+  height: 48px;
+  border-radius: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 4px 2px;
+  position: relative;
+}
+
+.mobile-tab-item span {
+  font-size: 0.65rem;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: -0.3px;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(4px) scale(0.9);
+  overflow: hidden;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 .mobile-tab-item svg {
-  transition: transform var(--transition-fast);
-  color: var(--text-muted);
-  /* 비활성 아이콘 색상도 통일 */
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
+  color: #94a3b8;
+  flex-shrink: 0;
 }
 
 .mobile-tab-item:hover {
   color: var(--text-secondary);
 }
 
+.mobile-tab-item:hover svg {
+  color: var(--text-secondary);
+}
+
+/* 활성(선택된) 탭 인터랙션 - 캡슐 하이라이트 및 텍스트 부드럽게 노출 */
 .mobile-tab-item.active {
+  flex: 1.25;
+  background: rgba(13, 148, 136, 0.08);
   color: var(--accent-color);
-  /* 활성 탭은 브랜드 컬러(Teal) */
 }
 
 .mobile-tab-item.active svg {
-  transform: translateY(-2px);
   color: var(--accent-color);
-  /* 활성 아이콘 색상 */
+  transform: translateY(-1px) scale(1.05);
+}
+
+.mobile-tab-item.active span {
+  max-height: 16px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  color: var(--accent-color);
 }
 
 /* 글로벌 커스텀 안내 모달 스타일 (Glassmorphism 적용) */
@@ -1629,6 +1669,10 @@ body {
 /* 각 버튼의 아이콘 배경색 커스텀 */
 .chat-btn .btn-icon {
   background-color: rgba(13, 148, 136, 0.06);
+}
+
+.proposal-btn .btn-icon {
+  background-color: rgba(245, 158, 11, 0.08);
 }
 
 .assist-btn .btn-icon {

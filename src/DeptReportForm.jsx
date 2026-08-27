@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ChevronRight, Plus, Trash2, Sparkles, Loader, AlertCircle, Check,
   Building2, Calendar, Clock
@@ -30,7 +30,6 @@ const DeptReportForm = ({ onComplete }) => {
   // ─── UI 상태 ─── //
   const [step, setStep] = useState('info'); // 'info' | 'entries'
   const [isRefining, setIsRefining] = useState(false);
-  const [refineLevel, setRefineLevel] = useState('B');
   const [refineError, setRefineError] = useState('');
   const [isRefined, setIsRefined] = useState(false);
 
@@ -101,7 +100,7 @@ const DeptReportForm = ({ onComplete }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           report_data: _buildReportData(),
-          refine_level: refineLevel,
+          refine_level: 'B',
         }),
       });
 
@@ -134,7 +133,11 @@ const DeptReportForm = ({ onComplete }) => {
     // 백엔드로 전송할 때 UI 전용 속성(isCustomCategory)을 제거하여 가공합니다.
     const cleanedEntries = entries
       .filter(e => e.content.trim())
-      .map(({ isCustomCategory, ...rest }) => rest);
+      .map(e => {
+        const item = { ...e };
+        delete item.isCustomCategory;
+        return item;
+      });
 
     return {
       document_type: 'weekly_report',

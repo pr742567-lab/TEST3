@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Layout, FileText, Loader, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Layout, Loader, AlertCircle, CheckCircle } from 'lucide-react';
 
 // 백엔드 API 주소
 // localhost 접속 시 IPv6(::1) 연결 오류 방지를 위해 호스트명이 localhost인 경우 127.0.0.1로 포워딩

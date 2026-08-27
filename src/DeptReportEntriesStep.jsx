@@ -1,4 +1,3 @@
-import React from 'react';
 import { Plus, Trash2, ChevronRight, ChevronLeft } from 'lucide-react';
 import './DeptReportForm.css';
 

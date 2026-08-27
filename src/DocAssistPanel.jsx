@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
-import { FileText, Lightbulb, AlertTriangle, FileCheck } from 'lucide-react';
-import DeptReportTab from './DeptReportTab';
-import ImprovementProposalTab from './ImprovementProposalTab';
-import RiskAssessmentTab from './RiskAssessmentTab';
-import DraftDocumentTab from './DraftDocumentTab';
+import { useState, lazy, Suspense } from 'react';
+import { FileText, AlertTriangle, FileCheck, Loader2 } from 'lucide-react';
 import './DocAssistPanel.css';
 
+// 탭 컴포넌트 지연 로딩 (Code Splitting)
+const DeptReportTab = lazy(() => import('./DeptReportTab'));
+const RiskAssessmentTab = lazy(() => import('./RiskAssessmentTab'));
+const DraftDocumentTab = lazy(() => import('./DraftDocumentTab'));
+
+const TabLoadingFallback = () => (
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px', gap: '1rem', color: 'var(--text-secondary)' }}>
+    <Loader2 size={32} className="spinning" style={{ color: 'var(--accent-color)' }} />
+    <span style={{ fontSize: '0.95rem' }}>화면을 불러오는 중입니다...</span>
+  </div>
+);
 
 /**
  * 문서 어시스트 메인 패널 컴포넌트 (Component)
  * - 문서 유형 선택 허브 역할을 합니다.
  * - 선택 시 해당 워크플로우 화면으로 전환됩니다.
  *   1. 진주공장 주요 업무보고 (DeptReportTab)
- *   2. 개선 제안서 (ImprovementProposalTab) - 추후 구현
+ *   2. 위험성 평가 (RiskAssessmentTab)
+ *   3. 품의서 (DraftDocumentTab)
  */
 const DocAssistPanel = ({
   messages = [],
@@ -32,10 +40,6 @@ const DocAssistPanel = ({
     }
   };
 
-  // 모달 상태 관리 (준비 중 안내 목적)
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-
   // 문서 유형 선택 화면으로 돌아가기
   const handleBack = () => {
     if (propOnBack) {
@@ -47,19 +51,27 @@ const DocAssistPanel = ({
 
   // 선택된 문서 유형에 따라 화면 전환
   if (selectedDocType === 'weekly_report') {
-    return <DeptReportTab messages={messages} onBack={handleBack} />;
-  }
-
-  if (selectedDocType === 'improvement_proposal') {
-    return <ImprovementProposalTab onBack={handleBack} />;
+    return (
+      <Suspense fallback={<TabLoadingFallback />}>
+        <DeptReportTab messages={messages} onBack={handleBack} />
+      </Suspense>
+    );
   }
 
   if (selectedDocType === 'risk_assessment') {
-    return <RiskAssessmentTab onBack={handleBack} />;
+    return (
+      <Suspense fallback={<TabLoadingFallback />}>
+        <RiskAssessmentTab onBack={handleBack} />
+      </Suspense>
+    );
   }
 
   if (selectedDocType === 'draft_document') {
-    return <DraftDocumentTab onBack={handleBack} />;
+    return (
+      <Suspense fallback={<TabLoadingFallback />}>
+        <DraftDocumentTab onBack={handleBack} />
+      </Suspense>
+    );
   }
 
   // 기본: 문서 유형 선택 화면
@@ -99,22 +111,6 @@ const DocAssistPanel = ({
             <p>부서를 선택하고 업무 내용만 입력하면 내용을 정리하여 PPT를 자동 생성합니다</p>
           </div>
           <div className="doc-type-card-badge">PPT</div>
-          <div className="doc-type-card-arrow">→</div>
-        </div>
-
-        <div
-          className="doc-type-card"
-          id="doc-card-improvement-proposal"
-          onClick={() => handleSelectDocType('improvement_proposal')}
-        >
-          <div className="doc-type-card-icon improvement-proposal">
-            <Lightbulb size={32} />
-          </div>
-          <div className="doc-type-card-content">
-            <h3>개선 제안서</h3>
-            <p>문제점과 개선안을 입력하면 내용을 정리하여 제안서 양식에 맞는 Excel을 자동 생성합니다</p>
-          </div>
-          <div className="doc-type-card-badge">Excel</div>
           <div className="doc-type-card-arrow">→</div>
         </div>
 
@@ -177,24 +173,6 @@ const DocAssistPanel = ({
           </div>
         </div>
       </div>
-
-      {/* 글로벌 알림 모달 창 (준비 중 안내 목적) */}
-      {isModalOpen && (
-        <div className="custom-modal-overlay" id="doc-modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="custom-modal-content" id="doc-modal-content" onClick={e => e.stopPropagation()}>
-            <div className="custom-modal-header">
-              <h3>💡 안내</h3>
-              <button className="custom-modal-close" id="doc-modal-close" onClick={() => setIsModalOpen(false)}>&times;</button>
-            </div>
-            <div className="custom-modal-body">
-              <p>{modalMessage}</p>
-            </div>
-            <div className="custom-modal-footer">
-              <button className="custom-modal-confirm-btn" id="doc-modal-confirm" onClick={() => setIsModalOpen(false)}>확인</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

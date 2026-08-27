@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Sparkles, Wand2, Loader, ChevronRight, AlertCircle } from 'lucide-react';
 
 // 백엔드 API 주소

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   ArrowLeft, Download, Plus, Trash2, Sparkles, Image as ImageIcon, 
-  CheckCircle2, AlertCircle, Save, HelpCircle, ShieldAlert 
+  AlertCircle, ShieldAlert 
 } from 'lucide-react';
 import './RiskAssessmentTab.css';
 
@@ -12,27 +12,11 @@ const RiskAssessmentTab = ({ onBack }) => {
   // 스크롤 상단 이동을 위한 컨테이너 참조 (Container Ref)
   const containerRef = useRef(null);
 
-  // ─── 1. 기본 정보 상태 (Basic Information State) ───
-  const [year, setYear] = useState('2026년');
-  const [selectedDept, setSelectedDept] = useState('총무파트');
-  const [assessDate, setAssessDate] = useState(new Date().toISOString().split('T')[0]);
-  const [assessor, setAssessor] = useState('');
-
-  // 사용자가 요청한 변경된 12개 파트 목록
-  const departmentList = [
-    '총무파트',
-    '설비관리파트',
-    '전기제어파트',
-    '품질보증파트',
-    '생산관리파트',
-    '조성파트',
-    '자재관리파트',
-    '가공1파트',
-    '가공2파트',
-    '완정1파트',
-    '완정2파트',
-    '물류관리파트'
-  ];
+  // ─── 1. 기본 정보 상수 (Basic Information) ───
+  const year = '2026년';
+  const selectedDept = '총무파트';
+  const assessDate = new Date().toISOString().split('T')[0];
+  const assessor = '진주공장 안전팀';
 
   // ─── 2. 재해 형태 및 KRAS 요인 드롭다운 목록 ───
   const disasterTypes = [
@@ -115,10 +99,11 @@ const RiskAssessmentTab = ({ onBack }) => {
   // 현재 세부 작성 단계 상태 (Current Form Step State)
   const [currentStep, setCurrentStep] = useState(1);
 
-  // 선택 행 변경 시 단계를 1단계로 리셋 (Reset step on selected item change)
-  useEffect(() => {
+  // 행 선택 핸들러 (선택 시 1단계로 리셋)
+  const handleSelectItem = (id) => {
+    setSelectedItemId(id);
     setCurrentStep(1);
-  }, [selectedItemId]);
+  };
 
   // 단계 변경 또는 선택 항목 변경 시 스크롤 상단 이동 (Scroll to Top)
   useEffect(() => {
@@ -498,7 +483,7 @@ const RiskAssessmentTab = ({ onBack }) => {
                   <div 
                     key={item.id} 
                     className={`risk-card ${selectedItemId === item.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedItemId(item.id)}
+                    onClick={() => handleSelectItem(item.id)}
                   >
                     <div className="card-top">
                       <span className="card-seq">순번 {item.seq}</span>

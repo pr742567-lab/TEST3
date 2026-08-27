@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ChevronRight,
   ChevronLeft,
@@ -706,19 +706,16 @@ const OjtGuidePanel = ({
   const selectedPart = currentState.part || '';
   const selectedItemIdx = currentState.itemIdx !== undefined ? currentState.itemIdx : null;
 
-  const updateState = (updates) => {
+  const updateState = (updates, replace = false) => {
     const next = { ...currentState, ...updates };
     if (onOjtStateChange) {
-      onOjtStateChange(next);
+      onOjtStateChange(next, replace);
     } else {
       setInternalState(next);
     }
   };
 
-  const setStep = (newStep) => updateState({ step: newStep });
-  const setSelectedDept = (dept) => updateState({ dept });
-  const setSelectedPart = (part) => updateState({ part });
-  const setSelectedItemIdx = (itemIdx) => updateState({ itemIdx });
+  const setStep = (newStep, replace = false) => updateState({ step: newStep }, replace);
 
   // 모달 상태
   const [showModal, setShowModal] = useState(false);
@@ -774,10 +771,12 @@ const OjtGuidePanel = ({
 
   // 전체 초기화
   const handleReset = () => {
-    setStep(0);
-    setSelectedDept('');
-    setSelectedPart('');
-    setSelectedItemIdx(null);
+    updateState({
+      step: 0,
+      dept: '',
+      part: '',
+      itemIdx: null
+    });
     setIsConfirmed(false);
     setAnswers({});
     setSubmitted(false);
@@ -788,8 +787,10 @@ const OjtGuidePanel = ({
     if (propOnBack) {
       propOnBack();
     } else {
-      setStep(1);
-      setSelectedItemIdx(null);
+      updateState({
+        step: 1,
+        itemIdx: null
+      });
       setIsConfirmed(false);
       setAnswers({});
       setSubmitted(false);
@@ -802,7 +803,7 @@ const OjtGuidePanel = ({
     <div className="ojt-panel">
       {/* 공통 헤더 */}
       <div className="content-header">
-        <h2>🌱 신입사원 OJT 가이드</h2>
+        <h2>🌱 OJT 가이드</h2>
         <div className="content-subheader-container">
           <span className="slogan-badge">맞춤형 직무 학습</span>
           <span className="slogan-desc">
@@ -848,7 +849,9 @@ const OjtGuidePanel = ({
                 <select
                   className="ojt-select"
                   value={selectedDept}
-                  onChange={(e) => { setSelectedDept(e.target.value); setSelectedPart(''); }}
+                  onChange={(e) => {
+                    updateState({ dept: e.target.value, part: '' }, true);
+                  }}
                 >
                   <option value="">부서를 선택하세요</option>
                   {Object.keys(ORG_DATA).map((dept) => (
@@ -861,13 +864,15 @@ const OjtGuidePanel = ({
                 <select
                   className="ojt-select"
                   value={selectedPart}
-                  onChange={(e) => setSelectedPart(e.target.value)}
+                  onChange={(e) => {
+                    updateState({ part: e.target.value }, true);
+                  }}
                   disabled={!selectedDept || ORG_DATA[selectedDept]?.length === 0}
                 >
                   <option value="">
                     {!selectedDept ? '부서를 먼저 선택하세요'
                       : ORG_DATA[selectedDept]?.length === 0 ? '산하 파트 없음'
-                      : '파트를 선택하세요'}
+                        : '파트를 선택하세요'}
                   </option>
                   {selectedDept && ORG_DATA[selectedDept]?.map((part) => (
                     <option key={part} value={part}>{part}</option>

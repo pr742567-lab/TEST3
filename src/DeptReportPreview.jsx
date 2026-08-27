@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Download, ChevronLeft, Loader, CheckCircle, AlertCircle } from 'lucide-react';
 import { API_BASE_URL } from './utils/api';
 import './DeptReportForm.css';

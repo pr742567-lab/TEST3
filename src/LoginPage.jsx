@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Lock, User, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import './LoginPage.css';
 
@@ -155,7 +155,7 @@ function LoginPage({ onLogin }) {
             {/* 초기 아이디 / 비밀번호 안내 */}
             <div className="native-guide-box">
               <p className="guide-text">
-                초기 아이디, 비밀번호는 <strong>Moorim</strong> / <strong>Moorim</strong> 입니다.
+                초기 아이디, 비밀번호는 <strong>moorim</strong> / <strong>moorim</strong> 입니다.
               </p>
             </div>
           </div>

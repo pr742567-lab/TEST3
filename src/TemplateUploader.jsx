@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Upload, FileCheck, AlertCircle, Loader } from 'lucide-react';
 
 // 백엔드 API 주소

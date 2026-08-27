@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Sparkles, Loader, Check, AlertCircle, ChevronLeft, ChevronRight, Edit3 } from 'lucide-react';
 import { API_BASE_URL } from './utils/api';
 import './DeptReportForm.css';
@@ -27,7 +27,6 @@ const DeptReportRefineStep = ({
   onBack
 }) => {
   const [isRefining, setIsRefining] = useState(false);
-  const [refineLevel, setRefineLevel] = useState('B'); // 기본값: B. 포맷 + 말투 정리
   const [refineError, setRefineError] = useState('');
 
   // 실적과 계획 항목들을 분리
@@ -43,7 +42,11 @@ const DeptReportRefineStep = ({
   const _buildReportData = () => {
     const cleanedEntries = entries
       .filter((e) => e.content.trim())
-      .map(({ isCustomCategory, ...rest }) => rest);
+      .map((e) => {
+        const item = { ...e };
+        delete item.isCustomCategory;
+        return item;
+      });
 
     return {
       document_type: 'weekly_report',
@@ -71,7 +74,7 @@ const DeptReportRefineStep = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           report_data: _buildReportData(),
-          refine_level: refineLevel,
+          refine_level: 'B',
         }),
       });
 
