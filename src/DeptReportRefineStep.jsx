@@ -83,14 +83,18 @@ const DeptReportRefineStep = ({
       }
 
       const data = await response.json();
-      const refined = data.refined_entries || [];
+      const refined = Array.isArray(data.refined_entries) ? data.refined_entries : [];
 
-      // 다듬어진 내용을 기존 entries의 content 필드에 반영
+      // 다듬어진 내용을 기존 non-empty entries의 content 필드에 정확히 매핑 반영
+      let refinedIdx = 0;
       setEntries((prev) =>
-        prev.map((entry, idx) => {
-          const match = refined[idx];
-          if (match && match.content) {
-            return { ...entry, content: match.content };
+        prev.map((entry) => {
+          if (entry.content && entry.content.trim()) {
+            const match = refined[refinedIdx++];
+            const newContent = match?.content || match?.refined_content;
+            if (newContent) {
+              return { ...entry, content: newContent };
+            }
           }
           return entry;
         })

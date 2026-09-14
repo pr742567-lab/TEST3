@@ -1,43 +1,21 @@
-/**
- * 개선 제안서 내용 다듬기 유틸리티
- * 1. 안전한 서버리스 API (/api/refine)를 1순위로 호출합니다. (Vercel 배포 환경)
- * 2. 로컬 개발 환경에서 .env에 VITE_GEMINI_API_KEY가 있을 경우 직접 호출로 fallback 지원합니다.
- * ※ API 키는 코드에 절대 하드코딩하지 않습니다.
- */
+// Vercel Serverless Function: Gemini API 프록시 엔드포인트
+// 서버 환경에서 안전하게 GEMINI_API_KEY를 호출하므로 클라이언트에 키가 노출되지 않습니다.
 
-export async function refineProposalWithGemini({ problem, improvement, expectedEffect }) {
-  // 1순위: 서버리스 API (/api/refine) 호출 - API 키가 클라이언트에 전혀 노출되지 않음
-  try {
-    const apiRes = await fetch('/api/refine', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ problem, improvement, expectedEffect })
+export default async function handler(req, res) {
+  // CORS 및 메서드 제어
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'POST 요청만 허용됩니다.' });
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ 
+      error: '서버에 GEMINI_API_KEY 환경 변수가 설정되지 않았습니다. Vercel Settings -> Environment Variables에 키를 등록해주세요.' 
     });
-
-    if (apiRes.ok) {
-      const data = await apiRes.json();
-      return {
-        problem: data.problem || problem,
-        improvement: data.improvement || improvement,
-        expected_effect: data.expected_effect || expectedEffect
-      };
-    }
-    
-    // 서버리스에서 명시적 에러 반환 시
-    const errJson = await apiRes.json().catch(() => ({}));
-    if (errJson.error && !errJson.error.includes('404')) {
-      throw new Error(errJson.error);
-    }
-  } catch (serverlessErr) {
-    // 404 등이거나 서버리스가 없는 로컬 단독 환경인 경우 아래 로컬 fallback 진행
-    console.warn('[Refine API] 서버리스 함수 호출 불가, 로컬 환경변수 확인 중:', serverlessErr.message);
   }
 
-  // 2순위 (로컬 개발 환경용 fallback): 로컬 .env의 VITE_GEMINI_API_KEY 사용
-  const localKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!localKey) {
-    throw new Error('API 키가 설정되지 않았습니다. Vercel 환경 변수에 GEMINI_API_KEY를 등록해주세요.');
-  }
+  const { problem, improvement, expectedEffect } = req.body || {};
 
   const prompt = `
 당신은 제조업 및 사내 업무 혁신을 위한 '개선 제안서' 작성 전문 AI 컨설턴트입니다.
@@ -75,7 +53,7 @@ export async function refineProposalWithGemini({ problem, improvement, expectedE
   for (const model of models) {
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${localKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -103,19 +81,21 @@ export async function refineProposalWithGemini({ problem, improvement, expectedE
       if (jsonMatch) {
         const jsonStr = jsonMatch[1] || jsonMatch[0];
         const parsed = JSON.parse(jsonStr);
-        return {
+        return res.status(200).json({
           problem: parsed.problem || problem,
           improvement: parsed.improvement || improvement,
           expected_effect: parsed.expected_effect || expectedEffect
-        };
+        });
       }
-      
+
       throw new Error('AI 응답 파싱 실패');
     } catch (err) {
       lastError = err;
-      console.warn(`[Gemini Local] ${model} 호출 실패:`, err.message);
+      console.warn(`[Gemini Serverless] ${model} 호출 실패:`, err.message);
     }
   }
 
-  throw lastError || new Error('내용 다듬기 호출에 실패했습니다.');
+  return res.status(500).json({
+    error: lastError ? lastError.message : '내용 다듬기 호출에 실패했습니다.'
+  });
 }

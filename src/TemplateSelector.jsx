@@ -1,15 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layout, Loader, AlertCircle, CheckCircle } from 'lucide-react';
-
-// 백엔드 API 주소
-// localhost 접속 시 IPv6(::1) 연결 오류 방지를 위해 호스트명이 localhost인 경우 127.0.0.1로 포워딩
-const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  const hostname = window.location.hostname;
-  const targetHost = hostname === 'localhost' ? '127.0.0.1' : hostname;
-  return `http://${targetHost}:8002`;
-};
-const API_BASE_URL = getApiBaseUrl();
+import { API_BASE_URL } from './utils/api';
 
 // 사내 표준 PPT 템플릿 선택 컴포넌트 (1단계 대체용)
 // - 백엔드 API로부터 사용 가능한 표준 PPT 템플릿 목록 조회
@@ -34,11 +25,12 @@ const TemplateSelector = ({ onAnalysisComplete }) => {
           throw new Error(`템플릿 목록 조회 실패 (${response.status})`);
         }
         const data = await response.json();
-        setTemplates(data || []);
+        const list = Array.isArray(data) ? data : (data?.templates || []);
+        setTemplates(list);
         
         // 첫 번째 템플릿 자동 선택
-        if (data && data.length > 0) {
-          setSelectedId(data[0].id);
+        if (list.length > 0 && list[0]?.id) {
+          setSelectedId(list[0].id);
         }
         setLoadingState('idle');
       } catch (error) {
@@ -128,7 +120,15 @@ const TemplateSelector = ({ onAnalysisComplete }) => {
                 <div
                   key={tmpl.id}
                   className={`template-card ${isSelected ? 'selected' : ''}`}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setSelectedId(tmpl.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedId(tmpl.id);
+                    }
+                  }}
                   style={{
                     border: isSelected ? '2px solid var(--primary-color)' : '1px solid var(--border-color)',
                     borderRadius: '12px',

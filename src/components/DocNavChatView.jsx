@@ -23,7 +23,7 @@ export const AccordionMessage = React.memo(({ content, sources = [], isTyping = 
           <Folder size={16} /> <span>참고 문서 출처</span>
         </div>
         <ul style={{ listStyle: 'none', paddingLeft: 0, margin: 0 }}>
-          {listToRender.sort((a, b) => a.num - b.num).map(cit => (
+          {[...listToRender].sort((a, b) => (Number(a.num) || 0) - (Number(b.num) || 0)).map(cit => (
             <li key={cit.num} style={{ marginBottom: '0.5rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span className="chat-citation-link" style={{ flexShrink: 0 }}>
                 [{cit.num}]
@@ -105,7 +105,19 @@ function DocNavChatView({
 
           {/* 4대 카테고리 카드 그리드 */}
           <div className="nav-card-selector" style={{ gap: '0.45rem', marginBottom: '0.2rem' }}>
-            <div className="nav-card" onClick={() => onSelectCategory('트러블슈팅')} style={{ padding: '0.7rem 1rem' }}>
+            <div
+              className="nav-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelectCategory('트러블슈팅')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectCategory('트러블슈팅');
+                }
+              }}
+              style={{ padding: '0.7rem 1rem' }}
+            >
               <div className="nav-card-icon troubleshooting" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>🔧</div>
               <div className="nav-card-content">
                 <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>트러블슈팅</h3>
@@ -114,7 +126,19 @@ function DocNavChatView({
               <div className="nav-card-arrow">→</div>
             </div>
 
-            <div className="nav-card" onClick={() => onSelectCategory('작업표준')} style={{ padding: '0.7rem 1rem' }}>
+            <div
+              className="nav-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelectCategory('작업표준')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectCategory('작업표준');
+                }
+              }}
+              style={{ padding: '0.7rem 1rem' }}
+            >
               <div className="nav-card-icon work-standard" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>📋</div>
               <div className="nav-card-content">
                 <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>작업표준</h3>
@@ -123,7 +147,19 @@ function DocNavChatView({
               <div className="nav-card-arrow">→</div>
             </div>
 
-            <div className="nav-card" onClick={() => onSelectCategory('위험성평가')} style={{ padding: '0.7rem 1rem' }}>
+            <div
+              className="nav-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelectCategory('위험성평가')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectCategory('위험성평가');
+                }
+              }}
+              style={{ padding: '0.7rem 1rem' }}
+            >
               <div className="nav-card-icon risk-assessment" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>⚠️</div>
               <div className="nav-card-content">
                 <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>위험성평가</h3>
@@ -132,7 +168,19 @@ function DocNavChatView({
               <div className="nav-card-arrow">→</div>
             </div>
 
-            <div className="nav-card" onClick={() => onSelectCategory('업무매뉴얼')} style={{ padding: '0.7rem 1rem' }}>
+            <div
+              className="nav-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelectCategory('업무매뉴얼')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectCategory('업무매뉴얼');
+                }
+              }}
+              style={{ padding: '0.7rem 1rem' }}
+            >
               <div className="nav-card-icon work-manual" style={{ width: '38px', height: '38px', fontSize: '1.3rem' }}>📖</div>
               <div className="nav-card-content">
                 <h3 style={{ fontSize: '0.9rem', marginBottom: '0.1rem' }}>업무매뉴얼</h3>

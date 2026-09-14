@@ -1,15 +1,6 @@
 import { useState, useRef } from 'react';
 import { Upload, FileCheck, AlertCircle, Loader } from 'lucide-react';
-
-// 백엔드 API 주소
-// localhost 접속 시 IPv6(::1) 연결 오류 방지를 위해 호스트명이 localhost인 경우 127.0.0.1로 포워딩
-const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  const hostname = window.location.hostname;
-  const targetHost = hostname === 'localhost' ? '127.0.0.1' : hostname;
-  return `http://${targetHost}:8002`;
-};
-const API_BASE_URL = getApiBaseUrl();
+import { API_BASE_URL } from './utils/api';
 
 // PPT 템플릿 업로드 컴포넌트
 // - 드래그 앤 드롭(Drag & Drop) 또는 파일 선택(File Picker)으로 PPT 파일을 업로드
@@ -158,6 +149,7 @@ const TemplateUploader = ({ onAnalysisComplete }) => {
         type="file"
         accept=".ppt,.pptx"
         onChange={handleFileSelect}
+        aria-label="PPT 템플릿 파일 선택"
         style={{ display: 'none' }}
       />
 
@@ -165,10 +157,18 @@ const TemplateUploader = ({ onAnalysisComplete }) => {
       {uploadState === 'idle' && (
         <div
           className={`upload-dropzone ${isDragOver ? 'drag-over' : ''}`}
+          role="button"
+          tabIndex={0}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              fileInputRef.current?.click();
+            }
+          }}
         >
           <Upload size={48} strokeWidth={1.5} />
           <h3>PPT 템플릿을 업로드해 주세요</h3>

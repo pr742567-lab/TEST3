@@ -1,15 +1,6 @@
 import { useState } from 'react';
 import { Download, ChevronLeft, ChevronRight, Loader, AlertCircle, CheckCircle } from 'lucide-react';
-
-// 백엔드 API 주소
-// localhost 접속 시 IPv6(::1) 연결 오류 방지를 위해 호스트명이 localhost인 경우 127.0.0.1로 포워딩
-const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  const hostname = window.location.hostname;
-  const targetHost = hostname === 'localhost' ? '127.0.0.1' : hostname;
-  return `http://${targetHost}:8002`;
-};
-const API_BASE_URL = getApiBaseUrl();
+import { API_BASE_URL } from './utils/api';
 
 // 슬라이드 미리보기 & PPTX 내보내기 컴포넌트 (3단계)
 // - 확정된 슬라이드를 카드 형태로 미리보기
@@ -21,9 +12,14 @@ const SlidePreview = ({ templateData, slideContents, fileId, templateId }) => {
   const [buildState, setBuildState] = useState('idle'); // 'idle' | 'building' | 'done' | 'error'
   const [buildError, setBuildError] = useState('');
 
-  // 유효한 슬라이드만 필터 (제목 또는 본문이 있는 것)
-  const validSlides = slideContents.filter(s => s.title?.trim() || s.body?.trim());
-  const currentSlide = validSlides[previewIdx];
+  // 유효한 슬라이드만 필터 (제목, 본문 또는 커스텀 필드가 있는 것)
+  const validSlides = slideContents.filter(s =>
+    s.title?.trim() ||
+    s.body?.trim() ||
+    (s.fields && Object.values(s.fields).some(v => typeof v === 'string' && v.trim()))
+  );
+  const safePreviewIdx = Math.min(previewIdx, Math.max(0, validSlides.length - 1));
+  const currentSlide = validSlides[safePreviewIdx];
 
   // PPTX 빌드 & 다운로드 요청
   const handleBuildDownload = async () => {

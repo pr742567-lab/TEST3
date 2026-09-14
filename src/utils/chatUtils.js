@@ -115,10 +115,12 @@ export const processCitations = (text, sources = []) => {
 export const renderMarkdown = (text) => {
   if (!text) return '';
   
+  // 잠재적인 위험 스크립트 및 악성 태그/핸들러 사전 방어 (XSS 방지)
   let html = text
-    .replace(/&/g, '&amp;')
-    // <a> 및 <span> 태그를 보호하기 위해 기본적인 HTML 이스케이프는 제한적으로 적용하거나 생략
-    ;
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/\bon\w+\s*=\s*(['"]).*?\1/gi, '') // on* 이벤트 핸들러 제거 (onerror, onload 등)
+    .replace(/javascript:/gi, ''); // javascript: 유사 프로토콜 무력화
     
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/`(.*?)`/g, '<code>$1</code>');

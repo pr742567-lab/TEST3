@@ -1,15 +1,6 @@
 import { useState } from 'react';
 import { Sparkles, Wand2, Loader, ChevronRight, AlertCircle } from 'lucide-react';
-
-// 백엔드 API 주소
-// localhost 접속 시 IPv6(::1) 연결 오류 방지를 위해 호스트명이 localhost인 경우 127.0.0.1로 포워딩
-const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  const hostname = window.location.hostname;
-  const targetHost = hostname === 'localhost' ? '127.0.0.1' : hostname;
-  return `http://${targetHost}:8002`;
-};
-const API_BASE_URL = getApiBaseUrl();
+import { API_BASE_URL } from './utils/api';
 
 // 슬라이드 내용 편집 컴포넌트 (2단계)
 // - 키워드 입력 → AI 초안 생성
@@ -60,14 +51,20 @@ const SlideEditor = ({ templateData, slideContents, setSlideContents, messages =
       const data = await response.json();
       const drafts = data.drafts || [];
 
-      // 생성된 초안을 슬라이드 데이터에 반영
+      // 생성된 초안을 기존 슬라이드 데이터와 안전하게 병합
       setSlideContents(prev =>
-        prev.map((slide, idx) => ({
-          ...slide,
-          title: drafts[idx]?.title || slide.title,
-          body: drafts[idx]?.body || slide.body,
-          fields: drafts[idx]?.fields || slide.fields,
-        }))
+        prev.map((slide, idx) => {
+          const draft = drafts[idx];
+          if (!draft) return slide;
+          return {
+            ...slide,
+            title: draft.title !== undefined && draft.title !== '' ? draft.title : slide.title,
+            body: draft.body !== undefined && draft.body !== '' ? draft.body : slide.body,
+            fields: draft.fields && typeof draft.fields === 'object' && Object.keys(draft.fields).length > 0
+              ? { ...slide.fields, ...draft.fields }
+              : slide.fields,
+          };
+        })
       );
     } catch (error) {
       console.error('AI 초안 생성 에러:', error);
@@ -127,6 +124,7 @@ const SlideEditor = ({ templateData, slideContents, setSlideContents, messages =
       setRefineInstruction('');
     } catch (error) {
       console.error('텍스트 수정 에러:', error);
+      setGenerateError(error.message || '텍스트 수정 중 오류가 발생했습니다.');
     } finally {
       setIsRefining(false);
     }
@@ -212,7 +210,15 @@ const SlideEditor = ({ templateData, slideContents, setSlideContents, messages =
             <div
               key={idx}
               className={`se-slide-thumb ${activeSlide === idx ? 'active' : ''}`}
+              role="button"
+              tabIndex={0}
               onClick={() => setActiveSlide(idx)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveSlide(idx);
+                }
+              }}
             >
               <span className="se-slide-num">{idx + 1}</span>
               <span className="se-slide-title-preview">

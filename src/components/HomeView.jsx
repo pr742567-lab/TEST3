@@ -18,7 +18,7 @@ function HomeView({
       <div className="home-simple-header">
         {isLoggedIn ? (
           <div className="home-greeting-container">
-            <h2 className="home-greeting">안녕하세요, {currentUser.name}님! 👋</h2>
+            <h2 className="home-greeting">안녕하세요, {currentUser?.name || '사용자'}님! 👋</h2>
             <p className="home-greeting-sub">무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
           </div>
         ) : (
@@ -81,7 +81,19 @@ function HomeView({
         ) : (
           <div className="recent-activity-list-horizontal">
             {recentActivities.map(act => (
-              <div key={act.id} className="recent-activity-card" onClick={() => onActivityClick(act.type)}>
+              <div
+                key={act.id}
+                className="recent-activity-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => onActivityClick(act.type)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onActivityClick(act.type);
+                  }
+                }}
+              >
                 <div className="card-top">
                   <span className="card-doc-icon-wrapper">
                     <FileText size={14} />
