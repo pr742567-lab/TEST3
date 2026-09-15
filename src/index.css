@@ -1580,9 +1580,184 @@ body {
 }
 
 .home-simple-header {
-  text-align: center;
   margin-bottom: 1rem;
   /* 수직 여백 확보 */
+}
+
+.home-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.home-greeting-container {
+  flex: 1;
+  min-width: 0;
+}
+
+/* PWA 미니멀 앱 설치 버튼 */
+.pwa-install-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  background: rgba(45, 212, 191, 0.08);
+  border: 1px solid rgba(45, 212, 191, 0.25);
+  border-radius: 20px;
+  color: var(--accent-color);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  margin-top: 2px;
+}
+
+.pwa-install-mini-btn:hover {
+  background: rgba(45, 212, 191, 0.16);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.pwa-install-mini-btn .install-icon {
+  stroke-width: 2.2;
+}
+
+/* PWA 설치 안내 모달 */
+.pwa-guide-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.pwa-guide-modal-content {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  width: 100%;
+  max-width: 360px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.pwa-guide-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pwa-guide-modal-header .modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-guide-modal-header .modal-title-icon {
+  color: var(--accent-color);
+}
+
+.pwa-guide-modal-header h3 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.pwa-guide-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.pwa-guide-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.pwa-guide-modal-body {
+  padding: 1.1rem;
+}
+
+.pwa-guide-modal-body .guide-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.9rem;
+}
+
+.pwa-guide-modal-body .guide-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.pwa-guide-modal-body .guide-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.pwa-guide-modal-body .step-icon-badge {
+  background: var(--bg-surface-heavy);
+  border: 1px solid var(--border-color);
+  color: var(--accent-color);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pwa-guide-modal-footer {
+  padding: 0.75rem 1.1rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.pwa-guide-confirm-btn {
+  padding: 5px 14px;
+  background: var(--accent-color);
+  color: #0f172a;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.pwa-guide-confirm-btn:hover {
+  opacity: 0.9;
 }
 
 .home-subtitle {

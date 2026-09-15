@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>무림AI-ON</title>
     
+    <!-- PWA Web App Manifest & iOS Tags -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="무림AI-ON" />
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="무림AI-ON" />
     <meta property="og:description" content="사내 지식 플랫폼" />
@@ -21,6 +29,16 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // PWA 서비스 워커 등록
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.log('SW registration note:', err);
+          });
+        });
+      }
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

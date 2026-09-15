@@ -1,5 +1,6 @@
 import React from 'react';
 import { FileText } from 'lucide-react';
+import InstallAppButton from './InstallAppButton';
 
 /**
  * 홈 대시보드 화면 컴포넌트
@@ -16,17 +17,15 @@ function HomeView({
     <div className="home-dashboard">
       {/* 사용자 인사말 헤더 */}
       <div className="home-simple-header">
-        {isLoggedIn ? (
+        <div className="home-header-row">
           <div className="home-greeting-container">
-            <h2 className="home-greeting">안녕하세요, {currentUser?.name || '사용자'}님! 👋</h2>
+            <h2 className="home-greeting">
+              {isLoggedIn ? `안녕하세요, ${currentUser?.name || '사용자'}님! 👋` : '무림 사내 지식 플랫폼'}
+            </h2>
             <p className="home-greeting-sub">무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
           </div>
-        ) : (
-          <div className="home-greeting-container">
-            <h2 className="home-greeting">무림 사내 지식 플랫폼</h2>
-            <p className="home-greeting-sub">무림의 사내 업무 지식을 스마트하게 탐색하세요.</p>
-          </div>
-        )}
+          {isLoggedIn && <InstallAppButton />}
+        </div>
       </div>
 
       {/* 주요 메뉴 바로가기 버튼 목록 */}
